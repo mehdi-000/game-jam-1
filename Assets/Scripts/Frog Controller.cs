@@ -126,6 +126,9 @@ public class FrogController : MonoBehaviour
     }
     #endregion
 
+    // if the collider of the tongue hits something, try sticking to it
+
+
     #region Aiming Methods
     private void AimTongue()
     {
@@ -181,8 +184,6 @@ public class FrogController : MonoBehaviour
     #endregion
 
     #region Tongue Methods
-
-
     public void StickTo(Transform target = null, Collision collision = null)
     {
         if (tongueRb == null || target == null && collision == null || timeSinceTongueRelease < stickCooldown) { return; }
@@ -252,6 +253,7 @@ public class FrogController : MonoBehaviour
             }
             else
             {
+                bool foundTarget = false;
                 // When no direct hit, check for nearby colliders within a certain radius to find a target
                 Collider[] nearbyColliders = Physics.OverlapSphere(mouseTransform3D.position, 4f);
                 
@@ -276,15 +278,17 @@ public class FrogController : MonoBehaviour
                     if (closestCollider.gameObject.CompareTag("Target"))
                     {
                         StickTo(closestCollider.transform);
+                        foundTarget = true;
                     }
                 }
-                else
+
+                if (!foundTarget)
                 {
-                    Vector3 direction = transform.up;
-                    tongueRb.AddForce(direction.normalized * tongueShootForce, ForceMode.Impulse);
+                    tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
                 }
             }
         }
     }
     #endregion
+
 }
