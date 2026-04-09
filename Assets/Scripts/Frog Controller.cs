@@ -4,20 +4,27 @@ using UnityEngine.InputSystem;
 
 public class FrogController : MonoBehaviour
 {
-    [SerializeField] private SpringJoint leftLeg, rightLeg, tongue;
-    [SerializeField] private TongueSticker tongueSticker;
-    [SerializeField] private Rigidbody leftLegRb, rightLegRb, tongueRb;
-    [SerializeField] private Collider tongueCollider;
-    [SerializeField] private bool recomputeLegLengthOnStart = true;
+    [Header("References")]
+    [SerializeField] private InputActionAsset inputActions;
 
+    [Header("Legs")]
+    [SerializeField] private SpringJoint leftLeg, rightLeg;
+    [SerializeField] private Rigidbody leftLegRb, rightLegRb;
+
+    [Header("Tongue")]
+    [SerializeField] private SpringJoint tongue;
+    [SerializeField] private Rigidbody tongueRb;
+    [SerializeField] private Collider tongueCollider;
 
     [Header("Tongue Parameters")]
     [SerializeField] private Transform mouseTransform3D;
     [SerializeField] private List<Transform> Targets = new List<Transform>();
     [SerializeField] private Vector2 mousePosition;
     [SerializeField] private float tongueShootForce = 10f;
+    [SerializeField] private float stickCooldown = 0.25f; // Time in seconds before the tongue can stick again after being released
 
     [Header("Leg Parameters")]
+    [SerializeField] private bool recomputeLegLengthOnStart = false;
     [SerializeField] private float 
         tugMax, tugMin, // 0-1, 1 is leg toughes Frog, 0 is max extension
         tugSpeed, // how fast the leg tugs in when tugging
@@ -26,13 +33,15 @@ public class FrogController : MonoBehaviour
         legKickForceMultiplier, // the base force applied to the feet when kicking, multiplied by the current tug level
         currentTugLeft, currentTugRight;
 
+    [Header("Runtime Variables")]
+    [SerializeField] private bool isJumping, leftIsTugging, rightIsTugging, isTongueSticking; 
+    private float timeSinceTongueRelease;
 
-    [SerializeField] private bool isJumping, leftIsTugging, rightIsTugging;
-
-    [SerializeField] private InputActionAsset inputActions;
 
     [SerializeField] private float jumpforce = 10f;
 
+
+    #region Subscribe to input actions (OnEnable/OnDisable)
     private void OnEnable()
     {
         inputActions.Enable();
@@ -41,7 +50,7 @@ public class FrogController : MonoBehaviour
 
         // Tongue actions
         var tongueShootAction = inputActions.FindAction("TongueShoot");
-        if (tongueShootAction != null) { tongueShootAction.performed += ctx => ShootTongue(transform.up); }
+        if (tongueShootAction != null) { tongueShootAction.performed += ctx => ShootTongue(); }
         var aimAction = inputActions.FindAction("Look");
         if (aimAction != null) { aimAction.performed += ctx => mousePosition = ctx.ReadValue<Vector2>(); }
 
@@ -59,7 +68,6 @@ public class FrogController : MonoBehaviour
 
     }
 
-
     private void OnDisable()
     {
         inputActions.Disable();
@@ -68,7 +76,7 @@ public class FrogController : MonoBehaviour
         // Unsubscribe from the input actions to prevent memory leaks
 
         var tongueShootAction = inputActions.FindAction("TongueShoot");
-        if (tongueShootAction != null) { tongueShootAction.performed -= ctx => ShootTongue(transform.up); }
+        if (tongueShootAction != null) { tongueShootAction.performed -= ctx => ShootTongue(); }
 
         var leftLegTugAction = inputActions.FindAction("LeftLegTug");
         if (leftLegTugAction != null) { leftLegTugAction.performed -= ctx => leftIsTugging = true; }
@@ -80,8 +88,9 @@ public class FrogController : MonoBehaviour
         var rightLegKickAction = inputActions.FindAction("RightLegKick");
         if (rightLegKickAction != null) { rightLegKickAction.performed -= ctx => JumpAndResetTug(jumpforce * currentTugRight, false); }
     }
+    #endregion
 
-
+    #region Monobehaviour Methods
     private void Start()
     {
         if (recomputeLegLengthOnStart)
@@ -89,6 +98,9 @@ public class FrogController : MonoBehaviour
             legLength = Vector3.Distance(leftLeg.transform.position, leftLeg.connectedBody.transform.position);
         }
 
+        if (leftLegRb == null) { leftLegRb = leftLeg.GetComponent<Rigidbody>(); }
+        if (rightLegRb == null) { rightLegRb = rightLeg.GetComponent<Rigidbody>(); }
+        if (tongueRb != null) { tongueRb = tongue.GetComponent<Rigidbody>(); }
     }
 
     private void Update()
@@ -105,13 +117,27 @@ public class FrogController : MonoBehaviour
             Tug(rightLeg, currentTugRight);
         }
 
+        if (!isTongueSticking && timeSinceTongueRelease < stickCooldown)
+        {
+            timeSinceTongueRelease += Time.deltaTime;
+        }
+
+        AimTongue();
+    }
+    #endregion
+
+    #region Aiming Methods
+    private void AimTongue()
+    {
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             mouseTransform3D.position = new Vector3(hit.point.x, hit.point.y, transform.position.z);
         }
     }
+    #endregion
 
+    #region Jumping Methods
     private void JumpAndResetTug(float force, bool usingleftLeg)
     {
         Jump(usingleftLeg ? leftLeg : rightLeg, force);
@@ -152,28 +178,81 @@ public class FrogController : MonoBehaviour
         leg.anchor = new Vector3(0, (1 - tug) * legLength, 0);
         //leg.spring = springMax * (1 - tug);
     }
+    #endregion
 
-    private void ShootTongue(Vector3 targetPos = default)
-    {        
-        if (tongueSticker.isStuck)
+    #region Tongue Methods
+
+
+    public void StickTo(Transform target = null, Collision collision = null)
+    {
+        if (tongueRb == null || target == null && collision == null || timeSinceTongueRelease < stickCooldown) { return; }
+
+        Vector3 contactPoint;
+        Vector3 contactNormal;
+
+        if (collision != null)
         {
-            tongueSticker.Release();
+            ContactPoint contact = collision.contacts[0];
+            contactPoint = contact.point;
+            contactNormal = contact.normal;
+
+            if (target == null)
+            {
+                target = collision.transform;
+            }
         }
         else
         {
-            Physics.SphereCast(mouseTransform3D.position, 4f, -mouseTransform3D.forward, out RaycastHit hit, 100f);
+            contactPoint = target.position;
+            contactNormal = (transform.position - target.position).normalized;
+        }
 
+        tongueRb.position = contactPoint;
+        tongueRb.rotation = Quaternion.LookRotation(contactNormal);
+
+        tongueRb.transform.SetParent(target);
+        tongueRb.transform.localPosition = Vector3.zero;
+        tongueRb.transform.localRotation = Quaternion.identity;
+        tongueRb.isKinematic = true;
+
+        isTongueSticking = true;
+    }
+
+    public void Release()
+    {
+        tongueRb.transform.SetParent(null);
+        tongueRb.isKinematic = false;
+
+        isTongueSticking = false;
+        timeSinceTongueRelease = 0f;
+    }
+
+    private void ShootTongue()
+    {        
+        if (isTongueSticking)
+        {
+            Release();
+            tongueRb.position = transform.position;
+            tongueRb.rotation = Quaternion.identity;
+            tongueCollider.enabled = false;
+        }
+        else // Try finding a target (by Tag) to stick to
+        {
+            tongueCollider.enabled = true;
+            Physics.Raycast(mouseTransform3D.position, -mouseTransform3D.forward, out RaycastHit hit, 20f);
+
+            // First, try a direct raycast to find a target
             if (hit.collider != null)
             {
                 Debug.Log("Hit: " + hit.collider.gameObject.name);
                 if (hit.collider.gameObject.CompareTag("Target"))
                 {
-                    tongueSticker.StickTo(hit.transform);
+                    StickTo(hit.transform);
                 }
             }
             else
             {
-                // Fallback: Suche nach Objekten in der Nähe der Mausposition mit OverlapSphere
+                // When no direct hit, check for nearby colliders within a certain radius to find a target
                 Collider[] nearbyColliders = Physics.OverlapSphere(mouseTransform3D.position, 4f);
                 
                 if (nearbyColliders.Length > 0)
@@ -196,16 +275,16 @@ public class FrogController : MonoBehaviour
                     
                     if (closestCollider.gameObject.CompareTag("Target"))
                     {
-                        tongueSticker.StickTo(closestCollider.transform);
+                        StickTo(closestCollider.transform);
                     }
                 }
                 else
                 {
-                    Vector3 direction = targetPos == default ? transform.up : targetPos - tongue.transform.position;
+                    Vector3 direction = transform.up;
                     tongueRb.AddForce(direction.normalized * tongueShootForce, ForceMode.Impulse);
                 }
             }
         }
     }
-
+    #endregion
 }

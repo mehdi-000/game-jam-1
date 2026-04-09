@@ -438,8 +438,8 @@ MonoBehaviour:
   m_ShowCameraFrustum: 1
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 2
-  m_BlendUpdateMethod: 1
+  m_UpdateMethod: 0
+  m_BlendUpdateMethod: 0
   m_DefaultBlend:
     m_Style: 1
     m_Time: 2
@@ -1102,19 +1102,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d668bc0a45dbcc24297d54c731d607ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FrogController
+  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   leftLeg: {fileID: 317999331}
   rightLeg: {fileID: 1655735899}
-  tongue: {fileID: 1715594294}
-  tongueSticker: {fileID: 1715594300}
   leftLegRb: {fileID: 317999332}
   rightLegRb: {fileID: 1655735900}
+  tongue: {fileID: 1715594294}
   tongueRb: {fileID: 1715594295}
   tongueCollider: {fileID: 1715594296}
-  recomputeLegLengthOnStart: 0
   mouseTransform3D: {fileID: 1637877088}
   Targets: []
   mousePosition: {x: 0, y: 0}
   tongueShootForce: 10
+  stickCooldown: 0.25
+  recomputeLegLengthOnStart: 0
   tugMax: 1
   tugMin: 0
   tugSpeed: 2
@@ -1126,7 +1127,7 @@ MonoBehaviour:
   isJumping: 0
   leftIsTugging: 0
   rightIsTugging: 0
-  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  isTongueSticking: 0
   jumpforce: 15
 --- !u!1 &832575517
 GameObject:
@@ -1613,7 +1614,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1715594299}
-  - component: {fileID: 1715594300}
   - component: {fileID: 1715594294}
   - component: {fileID: 1715594295}
   - component: {fileID: 1715594298}
@@ -1770,20 +1770,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1715594300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1715594293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a4525904b584714e9e2dcf13e17774e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  isStuck: 0
-  stickCooldown: 0.25
 --- !u!1 &1907724460
 GameObject:
   m_ObjectHideFlags: 0
