@@ -153,8 +153,8 @@ SpringJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 0
   m_ConnectedAnchor: {x: -1, y: -1, z: 0}
-  m_Spring: 10
-  m_Damper: 0.2
+  m_Spring: 2
+  m_Damper: 0.5
   m_MinDistance: 0
   m_MaxDistance: 0
   m_Tolerance: 0.025
@@ -173,7 +173,7 @@ Rigidbody:
   m_GameObject: {fileID: 317999330}
   serializedVersion: 5
   m_Mass: 0.2
-  m_LinearDamping: 0
+  m_LinearDamping: 0.2
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -1016,10 +1016,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 820676463}
-  - component: {fileID: 820676462}
-  - component: {fileID: 820676461}
   - component: {fileID: 820676464}
   - component: {fileID: 820676465}
+  - component: {fileID: 820676462}
+  - component: {fileID: 820676461}
   m_Layer: 6
   m_Name: Frog
   m_TagString: Untagged
@@ -1036,7 +1036,7 @@ Rigidbody:
   m_GameObject: {fileID: 820676460}
   serializedVersion: 5
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 0.2
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -1104,6 +1104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FrogController
   inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  spawnPosition: {x: 0, y: 0, z: 0}
   leftLeg: {fileID: 317999331}
   rightLeg: {fileID: 1655735899}
   leftLegRb: {fileID: 317999332}
@@ -1115,7 +1116,8 @@ MonoBehaviour:
   Targets: []
   mousePosition: {x: 0, y: 0}
   tongueShootForce: 10
-  shootCooldown: 0.5
+  maxTongueDistance: 12
+  shootCooldown: 0.8
   stickCooldown: 0.25
   recomputeLegLengthOnStart: 0
   tugMax: 1
@@ -1130,7 +1132,7 @@ MonoBehaviour:
   leftIsTugging: 0
   rightIsTugging: 0
   isTongueSticking: 0
-  jumpforce: 15
+  jumpforce: 28
 --- !u!114 &820676465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1704,8 +1706,8 @@ SpringJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 0
   m_ConnectedAnchor: {x: 1, y: -1, z: 0}
-  m_Spring: 10
-  m_Damper: 0.2
+  m_Spring: 2
+  m_Damper: 0.5
   m_MinDistance: 0
   m_MaxDistance: 0
   m_Tolerance: 0.025
@@ -1724,7 +1726,7 @@ Rigidbody:
   m_GameObject: {fileID: 1655735898}
   serializedVersion: 5
   m_Mass: 0.2
-  m_LinearDamping: 0
+  m_LinearDamping: 0.2
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -1937,7 +1939,7 @@ SpringJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
-  m_Spring: 20
+  m_Spring: 5
   m_Damper: 0.2
   m_MinDistance: 0
   m_MaxDistance: 0
@@ -1957,7 +1959,7 @@ Rigidbody:
   m_GameObject: {fileID: 1715594293}
   serializedVersion: 5
   m_Mass: 0.1
-  m_LinearDamping: 0
+  m_LinearDamping: 0.2
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}

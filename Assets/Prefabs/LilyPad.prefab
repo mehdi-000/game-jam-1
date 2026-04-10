@@ -71,8 +71,8 @@ MonoBehaviour:
   - {fileID: 7289262462755801010}
   spawnHeight: -4.8
   floatTime: 2
-  destroyAfterTime: 30
-  sinkingSpeed: 10
+  destroyAfterTime: 35
+  sinkingSpeed: 15
 --- !u!1 &7289262462755801010
 GameObject:
   m_ObjectHideFlags: 0

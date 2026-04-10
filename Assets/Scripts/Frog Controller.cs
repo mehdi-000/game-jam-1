@@ -7,6 +7,8 @@ public class FrogController : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputActionAsset inputActions;
 
+    [SerializeField] private Vector3 spawnPosition;
+
     [Header("Legs")]
     [SerializeField] private SpringJoint leftLeg, rightLeg;
     [SerializeField] private Rigidbody leftLegRb, rightLegRb;
@@ -20,7 +22,7 @@ public class FrogController : MonoBehaviour
     [SerializeField] private Transform mouseTransform3D;
     [SerializeField] private List<Transform> Targets = new List<Transform>();
     [SerializeField] private Vector2 mousePosition;
-    [SerializeField] private float tongueShootForce = 10f;
+    [SerializeField] private float tongueShootForce = 10f, maxTongueDistance = 10f;
     [SerializeField] private float shootCooldown = 0.5f,
         stickCooldown = 0.25f; // Time in seconds before the tongue can stick again after being released
 
@@ -67,6 +69,12 @@ public class FrogController : MonoBehaviour
         var rightLegKickAction = inputActions.FindAction("RightLegKick");
         if (rightLegKickAction != null) { rightLegKickAction.performed += ctx => JumpAndResetTug(jumpforce * currentTugRight, false); }
 
+        // QoL
+        var resetFrogAction = inputActions.FindAction("Reset");
+        if (resetFrogAction != null) { resetFrogAction.performed += ctx => ResetFrog(); }
+        var reloadAction = inputActions.FindAction("Reload");
+        if (reloadAction != null) { reloadAction.performed += ctx => Reload(); }
+
     }
 
     private void OnDisable()
@@ -90,6 +98,11 @@ public class FrogController : MonoBehaviour
         if (leftLegKickAction != null) { leftLegKickAction.performed -= ctx => JumpAndResetTug(jumpforce * currentTugLeft, true); }
         var rightLegKickAction = inputActions.FindAction("RightLegKick");
         if (rightLegKickAction != null) { rightLegKickAction.performed -= ctx => JumpAndResetTug(jumpforce * currentTugRight, false); }
+
+        var resetFrogAction = inputActions.FindAction("Reset");
+        if (resetFrogAction != null) { resetFrogAction.performed -= ctx => ResetFrog(); }
+        var reloadAction = inputActions.FindAction("Reload");
+        if (reloadAction != null) { reloadAction.performed -= ctx => Reload(); }
     }
     #endregion
 
@@ -222,7 +235,7 @@ public class FrogController : MonoBehaviour
         isTongueSticking = true;
     }
 
-    public void Release()
+    public void ReleaseTongue()
     {
         tongueRb.transform.SetParent(null);
         tongueRb.isKinematic = false;
@@ -235,7 +248,7 @@ public class FrogController : MonoBehaviour
     {        
         if (isTongueSticking)
         {
-            Release();
+            ReleaseTongue();
             tongueRb.position = transform.position;
             tongueRb.rotation = Quaternion.identity;
             tongueCollider.enabled = false;
@@ -243,6 +256,13 @@ public class FrogController : MonoBehaviour
         else // Try finding a target (by Tag) to stick to
         {
             if (timeSinceTongueRelease < shootCooldown) { return; }
+
+            if (Vector3.Distance(mouseTransform3D.position, transform.position) > maxTongueDistance)
+            {
+                tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
+                timeSinceTongueRelease = 0f; // Reset cooldown to prevent immediate re-shooting
+                return;
+            }
 
             tongueCollider.enabled = true;
             Physics.Raycast(mouseTransform3D.position, -mouseTransform3D.forward, out RaycastHit hit, 20f);
@@ -290,10 +310,33 @@ public class FrogController : MonoBehaviour
                 if (!foundTarget)
                 {
                     tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
+                    timeSinceTongueRelease = 0f; // Reset cooldown to prevent immediate re-shooting
                 }
             }
         }
     }
     #endregion
 
+    #region QoL Methods
+    private void ResetFrog()
+    {
+        transform.position = spawnPosition;
+        transform.rotation = Quaternion.identity;
+
+        ReleaseTongue();
+
+
+        leftLegRb.transform.localPosition = leftLeg.connectedBody.transform.localPosition + new Vector3(0, legLength, 0);
+        leftLegRb.linearVelocity = Vector3.zero;
+
+        rightLegRb.transform.localPosition = rightLeg.connectedBody.transform.localPosition + new Vector3(0, legLength, 0);
+        rightLegRb.linearVelocity = Vector3.zero;
+    }
+
+    public void Reload()
+    {
+
+    }
+
+    #endregion
 }
