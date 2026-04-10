@@ -21,7 +21,8 @@ public class FrogController : MonoBehaviour
     [SerializeField] private List<Transform> Targets = new List<Transform>();
     [SerializeField] private Vector2 mousePosition;
     [SerializeField] private float tongueShootForce = 10f;
-    [SerializeField] private float stickCooldown = 0.25f; // Time in seconds before the tongue can stick again after being released
+    [SerializeField] private float shootCooldown = 0.5f,
+        stickCooldown = 0.25f; // Time in seconds before the tongue can stick again after being released
 
     [Header("Leg Parameters")]
     [SerializeField] private bool recomputeLegLengthOnStart = false;
@@ -77,6 +78,8 @@ public class FrogController : MonoBehaviour
 
         var tongueShootAction = inputActions.FindAction("TongueShoot");
         if (tongueShootAction != null) { tongueShootAction.performed -= ctx => ShootTongue(); }
+        var aimAction = inputActions.FindAction("Look");
+        if (aimAction != null) { aimAction.performed -= ctx => mousePosition = ctx.ReadValue<Vector2>(); }
 
         var leftLegTugAction = inputActions.FindAction("LeftLegTug");
         if (leftLegTugAction != null) { leftLegTugAction.performed -= ctx => leftIsTugging = true; }
@@ -117,7 +120,7 @@ public class FrogController : MonoBehaviour
             Tug(rightLeg, currentTugRight);
         }
 
-        if (!isTongueSticking && timeSinceTongueRelease < stickCooldown)
+        if (!isTongueSticking && (timeSinceTongueRelease < stickCooldown || timeSinceTongueRelease < shootCooldown))
         {
             timeSinceTongueRelease += Time.deltaTime;
         }
@@ -239,6 +242,8 @@ public class FrogController : MonoBehaviour
         }
         else // Try finding a target (by Tag) to stick to
         {
+            if (timeSinceTongueRelease < shootCooldown) { return; }
+
             tongueCollider.enabled = true;
             Physics.Raycast(mouseTransform3D.position, -mouseTransform3D.forward, out RaycastHit hit, 20f);
 

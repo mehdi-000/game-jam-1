@@ -760,7 +760,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: ff234ecaa24a9144c88fdde119c278a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -960,7 +960,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8c7b8c89fa7e7ca40a45e01ce82e10e1, type: 2}
+  - {fileID: 2100000, guid: ff234ecaa24a9144c88fdde119c278a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1019,6 +1019,7 @@ GameObject:
   - component: {fileID: 820676462}
   - component: {fileID: 820676461}
   - component: {fileID: 820676464}
+  - component: {fileID: 820676465}
   m_Layer: 0
   m_Name: Frog
   m_TagString: Untagged
@@ -1114,6 +1115,7 @@ MonoBehaviour:
   Targets: []
   mousePosition: {x: 0, y: 0}
   tongueShootForce: 10
+  shootCooldown: 0.5
   stickCooldown: 0.25
   recomputeLegLengthOnStart: 0
   tugMax: 1
@@ -1129,6 +1131,24 @@ MonoBehaviour:
   rightIsTugging: 0
   isTongueSticking: 0
   jumpforce: 15
+--- !u!114 &820676465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820676460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82cfb7747945f22499d2684e5e64aa70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotationTracker
+  autoUpdate: 1
+  lastRotation: {x: 0, y: 0, z: 0, w: 0}
+  lastDeltaRotation: {x: 0, y: 0, z: 0, w: 0}
+  lastDeltaPitchYawRoll: {x: 0, y: 0, z: 0}
+  _referenceTransform: {fileID: 820676463}
+  resetTreshold: 5
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,7 +1442,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: ff234ecaa24a9144c88fdde119c278a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1519,7 +1539,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: ff234ecaa24a9144c88fdde119c278a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
