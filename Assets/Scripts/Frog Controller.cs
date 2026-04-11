@@ -53,7 +53,11 @@ public class FrogController : MonoBehaviour
 
         // Tongue actions
         var tongueShootAction = inputActions.FindAction("TongueShoot");
-        if (tongueShootAction != null) { tongueShootAction.performed += ctx => ShootTongue(); }
+        if (tongueShootAction != null)
+        {
+            tongueShootAction.started += OnTongueShootStarted;
+            tongueShootAction.canceled += OnTongueShootCanceled;
+        }
         var aimAction = inputActions.FindAction("Look");
         if (aimAction != null) { aimAction.performed += ctx => mousePosition = ctx.ReadValue<Vector2>(); }
 
@@ -85,7 +89,11 @@ public class FrogController : MonoBehaviour
         // Unsubscribe from the input actions to prevent memory leaks
 
         var tongueShootAction = inputActions.FindAction("TongueShoot");
-        if (tongueShootAction != null) { tongueShootAction.performed -= ctx => ShootTongue(); }
+        if (tongueShootAction != null)
+        {
+            tongueShootAction.started -= OnTongueShootStarted;
+            tongueShootAction.canceled -= OnTongueShootCanceled;
+        }
         var aimAction = inputActions.FindAction("Look");
         if (aimAction != null) { aimAction.performed -= ctx => mousePosition = ctx.ReadValue<Vector2>(); }
 
@@ -237,6 +245,12 @@ public class FrogController : MonoBehaviour
 
     public void ReleaseTongue()
     {
+        if (tongueRb == null)
+        {
+            isTongueSticking = false;
+            return;
+        }
+
         tongueRb.transform.SetParent(null);
         tongueRb.isKinematic = false;
 
@@ -244,77 +258,103 @@ public class FrogController : MonoBehaviour
         timeSinceTongueRelease = 0f;
     }
 
-    private void ShootTongue()
-    {        
-        if (isTongueSticking)
-        {
-            ReleaseTongue();
-            tongueRb.position = transform.position;
-            tongueRb.rotation = Quaternion.identity;
-            tongueCollider.enabled = false;
-        }
-        else // Try finding a target (by Tag) to stick to
-        {
-            if (timeSinceTongueRelease < shootCooldown) { return; }
+    /// <summary>
+    /// Call before destroying a Target the tongue may be parented to (<see cref="StickTo"/>),
+    /// or the tongue Rigidbody is destroyed with it and references become invalid.
+    /// </summary>
+    public void DetachTongueIfStuckTo(Transform enemyRoot)
+    {
+        if (enemyRoot == null || tongueRb == null || !isTongueSticking)
+            return;
 
-            if (Vector3.Distance(mouseTransform3D.position, transform.position) > maxTongueDistance)
+        if (!tongueRb.transform.IsChildOf(enemyRoot))
+            return;
+
+        ReleaseTongue();
+        tongueRb.position = transform.position;
+        tongueRb.rotation = Quaternion.identity;
+        if (tongueCollider != null)
+            tongueCollider.enabled = false;
+    }
+
+    private void OnTongueShootStarted(InputAction.CallbackContext ctx)
+    {
+        TryShootOrStickTongue();
+    }
+
+    private void OnTongueShootCanceled(InputAction.CallbackContext ctx)
+    {
+        if (!isTongueSticking)
+            return;
+
+        ReleaseTongue();
+        if (tongueRb == null)
+            return;
+        tongueRb.position = transform.position;
+        tongueRb.rotation = Quaternion.identity;
+        if (tongueCollider != null)
+            tongueCollider.enabled = false;
+    }
+
+    private void TryShootOrStickTongue()
+    {
+        if (isTongueSticking)
+            return;
+
+        if (timeSinceTongueRelease < shootCooldown) { return; }
+
+        if (tongueCollider != null)
+            tongueCollider.enabled = true;
+        Physics.Raycast(mouseTransform3D.position, -mouseTransform3D.forward, out RaycastHit hit, 20f);
+
+        // First, try a direct raycast to find a target
+        if (hit.collider != null)
+        {
+            Debug.Log("Hit: " + hit.collider.gameObject.name);
+            if (hit.collider.gameObject.CompareTag("Target"))
+            {
+                StickTo(hit.transform);
+            }
+        }
+        else
+        {
+            bool foundTarget = false;
+            // When no direct hit, check for nearby colliders within a certain radius to find a target
+            Collider[] nearbyColliders = Physics.OverlapSphere(mouseTransform3D.position, 4f);
+            
+            if (nearbyColliders.Length > 0)
+            {
+                Collider closestCollider = nearbyColliders[0];
+                float closestDistance = Vector3.Distance(mouseTransform3D.position, closestCollider.transform.position);
+                
+                foreach (Collider collider in nearbyColliders)
+                {
+                    if (collider.gameObject.CompareTag("Target"))
+                    {
+                        float distance = Vector3.Distance(mouseTransform3D.position, collider.transform.position);
+                        if (distance < closestDistance)
+                        {
+                            closestCollider = collider;
+                            closestDistance = distance;
+                        }
+                    }
+                }
+                
+                if (closestCollider.gameObject.CompareTag("Target"))
+                {
+                    StickTo(closestCollider.transform);
+                    foundTarget = true;
+                }
+            }
+
+            if (!foundTarget && tongueRb != null)
             {
                 tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
                 timeSinceTongueRelease = 0f; // Reset cooldown to prevent immediate re-shooting
-                return;
-            }
-
-            tongueCollider.enabled = true;
-            Physics.Raycast(mouseTransform3D.position, -mouseTransform3D.forward, out RaycastHit hit, 20f);
-
-            // First, try a direct raycast to find a target
-            if (hit.collider != null)
-            {
-                Debug.Log("Hit: " + hit.collider.gameObject.name);
-                if (hit.collider.gameObject.CompareTag("Target"))
-                {
-                    StickTo(hit.transform);
-                }
-            }
-            else
-            {
-                bool foundTarget = false;
-                // When no direct hit, check for nearby colliders within a certain radius to find a target
-                Collider[] nearbyColliders = Physics.OverlapSphere(mouseTransform3D.position, 4f);
-                
-                if (nearbyColliders.Length > 0)
-                {
-                    Collider closestCollider = nearbyColliders[0];
-                    float closestDistance = Vector3.Distance(mouseTransform3D.position, closestCollider.transform.position);
-                    
-                    foreach (Collider collider in nearbyColliders)
-                    {
-                        if (collider.gameObject.CompareTag("Target"))
-                        {
-                            float distance = Vector3.Distance(mouseTransform3D.position, collider.transform.position);
-                            if (distance < closestDistance)
-                            {
-                                closestCollider = collider;
-                                closestDistance = distance;
-                            }
-                        }
-                    }
-                    
-                    if (closestCollider.gameObject.CompareTag("Target"))
-                    {
-                        StickTo(closestCollider.transform);
-                        foundTarget = true;
-                    }
-                }
-
-                if (!foundTarget)
-                {
-                    tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
-                    timeSinceTongueRelease = 0f; // Reset cooldown to prevent immediate re-shooting
-                }
             }
         }
     }
+
     #endregion
 
     #region QoL Methods
