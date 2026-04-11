@@ -1,0 +1,172 @@
+
+.hud-root {
+    flex-grow: 1;
+    position: relative;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-top: 28px;
+    padding-right: 28px;
+    padding-left: 28px;
+    padding-bottom: 28px;
+    background-color: transparent;
+    overflow: visible;
+}
+
+.hud-slash {
+    position: absolute;
+    width: 18px;
+    height: 220px;
+    background-color: #ffe040;
+    opacity: 0.06;
+    rotate: -52deg;
+    top: 4%;
+    right: 8%;
+}
+
+.hud-stripe {
+    position: absolute;
+    width: 180%;
+    left: -40%;
+    height: 48px;
+    background-color: rgba(68, 232, 140, 0.04);
+    rotate: -12deg;
+    top: 12%;
+}
+
+.hud-panel {
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative;
+    min-width: 280px;
+}
+
+.trick-row {
+    position: relative;
+    margin-bottom: 10px;
+    align-items: flex-end;
+}
+
+.trick-shadow {
+    position: absolute;
+    right: 3px;
+    bottom: -3px;
+    font-size: 26px;
+    -unity-font-style: bold;
+    color: #0a0a0a;
+    opacity: 0.55;
+    rotate: -2.2deg;
+}
+
+.trick-name {
+    font-size: 26px;
+    -unity-font-style: bold;
+    color: #f0efe8;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #0a0a0a;
+    rotate: -2.2deg;
+    white-space: normal;
+}
+
+.score-row {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.score-caption {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: rgba(240, 239, 232, 0.45);
+    margin-right: 10px;
+    margin-bottom: 4px;
+    rotate: 1.2deg;
+}
+
+.score-value {
+    font-size: 44px;
+    -unity-font-style: bold;
+    color: #ffe040;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #0a0a0a;
+    rotate: -1deg;
+}
+
+.insect-count {
+    font-size: 32px;
+    color: #44e88c;
+}
+
+.tricks-count {
+    font-size: 28px;
+    color: #ff6b2c;
+}
+
+.distance-value {
+    font-size: 26px;
+    color: rgba(240, 239, 232, 0.85);
+}
+
+.insect-plus-one {
+    position: absolute;
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: #44e88c;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #0a0a0a;
+    -unity-text-align: middle-center;
+}
+
+.combo-block {
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative;
+}
+
+.combo-fire {
+    position: absolute;
+    left: -8px;
+    right: -12px;
+    bottom: 2px;
+    height: 10px;
+    background-color: rgba(255, 107, 44, 0.35);
+    border-radius: 2px;
+    rotate: -3deg;
+    opacity: 0.85;
+}
+
+.combo-line {
+    flex-direction: row;
+    align-items: center;
+}
+
+.combo-mult {
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: #ff6b2c;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #0a0a0a;
+    margin-right: 8px;
+    rotate: 2deg;
+}
+
+.combo-tag {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #44e88c;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #0a0a0a;
+    rotate: -1.5deg;
+}
+
+.combo-dim .combo-mult {
+    color: rgba(255, 107, 44, 0.35);
+}
+
+.combo-dim .combo-tag {
+    color: rgba(68, 232, 140, 0.35);
+}
+
+.combo-dim .combo-fire {
+    opacity: 0.2;
+}

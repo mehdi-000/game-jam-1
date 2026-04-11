@@ -237,6 +237,12 @@ public class FrogController : MonoBehaviour
 
     public void ReleaseTongue()
     {
+        if (tongueRb == null)
+        {
+            isTongueSticking = false;
+            return;
+        }
+
         tongueRb.transform.SetParent(null);
         tongueRb.isKinematic = false;
 
@@ -244,27 +250,43 @@ public class FrogController : MonoBehaviour
         timeSinceTongueRelease = 0f;
     }
 
+    /// <summary>
+    /// Call before destroying a Target the tongue may be parented to (<see cref="StickTo"/>),
+    /// or the tongue Rigidbody is destroyed with it and references become invalid.
+    /// </summary>
+    public void DetachTongueIfStuckTo(Transform enemyRoot)
+    {
+        if (enemyRoot == null || tongueRb == null || !isTongueSticking)
+            return;
+
+        if (!tongueRb.transform.IsChildOf(enemyRoot))
+            return;
+
+        Release();
+        tongueRb.position = transform.position;
+        tongueRb.rotation = Quaternion.identity;
+        if (tongueCollider != null)
+            tongueCollider.enabled = false;
+    }
+
     private void ShootTongue()
     {        
         if (isTongueSticking)
         {
-            ReleaseTongue();
+            Release();
+            if (tongueRb == null)
+                return;
             tongueRb.position = transform.position;
             tongueRb.rotation = Quaternion.identity;
-            tongueCollider.enabled = false;
+            if (tongueCollider != null)
+                tongueCollider.enabled = false;
         }
         else // Try finding a target (by Tag) to stick to
         {
             if (timeSinceTongueRelease < shootCooldown) { return; }
 
-            if (Vector3.Distance(mouseTransform3D.position, transform.position) > maxTongueDistance)
-            {
-                tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
-                timeSinceTongueRelease = 0f; // Reset cooldown to prevent immediate re-shooting
-                return;
-            }
-
-            tongueCollider.enabled = true;
+            if (tongueCollider != null)
+                tongueCollider.enabled = true;
             Physics.Raycast(mouseTransform3D.position, -mouseTransform3D.forward, out RaycastHit hit, 20f);
 
             // First, try a direct raycast to find a target
@@ -307,7 +329,7 @@ public class FrogController : MonoBehaviour
                     }
                 }
 
-                if (!foundTarget)
+                if (!foundTarget && tongueRb != null)
                 {
                     tongueRb.AddForce((mouseTransform3D.position - tongueRb.position).normalized * tongueShootForce, ForceMode.Impulse);
                     timeSinceTongueRelease = 0f; // Reset cooldown to prevent immediate re-shooting
