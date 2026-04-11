@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/TrickHud.uss?fileID=7433441132597879392&amp;guid=a1b2c3d4e5f6789012345678abcdef04&amp;type=3#TrickHud"/>
+    <ui:VisualElement name="HudRoot" class="hud-root">
+        <ui:VisualElement name="HudPanel" class="hud-panel">
+            <ui:VisualElement name="TrickRow" class="trick-row">
+                <ui:Label name="TrickShadow" text="" class="trick-shadow"/>
+                <ui:Label name="TrickName" text="" class="trick-name"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="score-row">
+                <ui:Label text="SCORE" class="score-caption"/>
+                <ui:Label name="ScoreValue" text="0" class="score-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="score-row">
+                <ui:Label text="INSECTS" class="score-caption"/>
+                <ui:Label name="InsectEatenValue" text="0" class="score-value insect-count"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="score-row">
+                <ui:Label text="TRICKS" class="score-caption"/>
+                <ui:Label name="TricksCountValue" text="0" class="score-value tricks-count"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="score-row">
+                <ui:Label text="DIST" class="score-caption"/>
+                <ui:Label name="DistanceValue" text="0 m" class="score-value distance-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="ComboBlock" class="combo-block">
+                <ui:VisualElement class="combo-fire"/>
+                <ui:VisualElement class="combo-line">
+                    <ui:Label name="MultiplierValue" text="2x" class="combo-mult"/>
+                    <ui:Label text="COMBO" class="combo-tag"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

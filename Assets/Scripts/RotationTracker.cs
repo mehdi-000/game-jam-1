@@ -193,6 +193,35 @@ public class RotationTracker : MonoBehaviour //, IHandleRigidbodyData
         return new float[] { vector.x, vector.y, vector.z };
     }
 
+    /// <summary>
+    /// We don't want a completed trick to re-score the same revolution.
+    /// </summary>
+    public void ConsumeAccumulatedAlongAxis(int axisIndex, float degreesToRemove)
+    {
+        if (degreesToRemove <= 0f || axisIndex < 0 || axisIndex > 2)
+            return;
+
+        float sign;
+        switch (axisIndex)
+        {
+            case 0:
+                sign = Mathf.Sign(pitchYawRollEventData.AccumulatedPitchYawRoll.x);
+                if (sign == 0f) return;
+                pitchYawRollEventData.AccumulatedPitchYawRoll.x -= sign * degreesToRemove;
+                break;
+            case 1:
+                sign = Mathf.Sign(pitchYawRollEventData.AccumulatedPitchYawRoll.y);
+                if (sign == 0f) return;
+                pitchYawRollEventData.AccumulatedPitchYawRoll.y -= sign * degreesToRemove;
+                break;
+            default:
+                sign = Mathf.Sign(pitchYawRollEventData.AccumulatedPitchYawRoll.z);
+                if (sign == 0f) return;
+                pitchYawRollEventData.AccumulatedPitchYawRoll.z -= sign * degreesToRemove;
+                break;
+        }
+    }
+
     public void ResetCombo(float? deltaValue = 0f, Vector3? deltaValues = default)
     {
         if (deltaValues != null)

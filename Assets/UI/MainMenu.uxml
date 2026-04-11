@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/MainMenu.uss?fileID=7433441132597879392&amp;guid=9c412b630bbad480a8df40e7d10ff3c6&amp;type=3#MainMenu"/>
+    <Style src="project://database/Assets/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=9c412b630bbad480a8df40e7d10ff3c6&amp;type=3#MainMenu"/>
     <ui:VisualElement name="Root" class="root" style="color: rgb(179, 217, 179); background-color: rgb(17, 34, 24);">
         <ui:VisualElement name="Content" class="content">
-            <ui:Image source="project://database/Assets/Images/jetsetRadio_placeholder.png?fileID=2800000&amp;guid=386c14ec6a4454d09b1155a706e555ce&amp;type=3#jetsetRadio_placeholder" style="height: 300px;"/>
+            <ui:Image source="project://database/Assets/Images/FrogStylerLogo.png?fileID=2800000&amp;guid=fc49605fed7d64d0aae682ebfc719630&amp;type=3#FrogStylerLogo" style="height: 300px; background-image: none;"/>
             <ui:VisualElement name="TitleBlock" class="title-block"/>
             <ui:VisualElement class="divider"/>
             <ui:VisualElement name="Buttons" class="buttons">

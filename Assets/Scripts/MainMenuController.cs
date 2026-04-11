@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [RequireComponent(typeof(UIDocument))]
@@ -17,8 +18,10 @@ public class MainMenuController : MonoBehaviour
 
         root.Q<Button>("PlayButton").RegisterCallback<ClickEvent>(_ =>
         {
-            GetComponent<UIDocument>().enabled = false;
+            SceneManager.LoadScene("SampleScene");
         });
+
+        root.Q<Button>("QuitButton").RegisterCallback<ClickEvent>(_ => Quit());
 
         foreach (Button btn in buttons)
         {
@@ -95,5 +98,14 @@ public class MainMenuController : MonoBehaviour
             yield return null;
         }
         swoosh.style.width = 0;
+    }
+
+    private static void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }
