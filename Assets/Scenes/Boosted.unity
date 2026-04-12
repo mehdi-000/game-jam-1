@@ -1040,11 +1040,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.69
+      value: 26.99
       objectReference: {fileID: 0}
     - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.83
+      value: 11.28
       objectReference: {fileID: 0}
     - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1276,9 +1276,9 @@ MonoBehaviour:
   mouseTransform3D: {fileID: 1637877088}
   Targets: []
   mousePosition: {x: 0, y: 0}
-  tongueShootForce: 20
+  tongueShootForce: 32
   maxTongueDistance: 20
-  shootCooldown: 0.8
+  shootCooldown: 0.3
   stickCooldown: 0.25
   recomputeLegLengthOnStart: 0
   tugMax: 1
@@ -1432,11 +1432,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5963220917650869330, guid: ea87d6ef19f3a4702b75e53a3c81d64b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 46.08
+      value: 48.65
       objectReference: {fileID: 0}
     - target: {fileID: 5963220917650869330, guid: ea87d6ef19f3a4702b75e53a3c81d64b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.98
+      value: 16.02
       objectReference: {fileID: 0}
     - target: {fileID: 5963220917650869330, guid: ea87d6ef19f3a4702b75e53a3c81d64b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2257,17 +2257,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5d7af42e0d649ce83f9d9dbe675d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemyspanwner
-  initialDistanceBeforeFirstSpawn: 22
-  minDistanceBetweenSpawns: 22
-  maxDistanceBetweenSpawns: 40
+  initialDistanceBeforeFirstSpawn: 8
+  minDistanceBetweenSpawns: 11
+  maxDistanceBetweenSpawns: 23
   spawnAheadMin: 16
   spawnAheadMax: 48
-  verticalSpread: 6
+  verticalSpread: 10
+  spawnOutsideMargin: 2
   player: {fileID: 820676463}
   enemyPrefabs:
   - {fileID: 6666562745563987879, guid: ea87d6ef19f3a4702b75e53a3c81d64b, type: 3}
   - {fileID: 497679297325174976, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
   - {fileID: 1910106811813643326, guid: 9c2f0ae87afd8bb44844837096d2da3c, type: 3}
+  spawnCamera: {fileID: 0}
 --- !u!1 &1636503889
 GameObject:
   m_ObjectHideFlags: 0
@@ -2784,6 +2786,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TongueAutoStick
   frogController: {fileID: 820676464}
   willAutoStick: 1
+--- !u!1001 &1894520990
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 497679297325174976, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_Name
+      value: EnemyLadybug (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 38.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041279439246135577, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
 --- !u!1 &1900000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -6493,4 +6552,5 @@ SceneRoots:
   - {fileID: 1474647945}
   - {fileID: 891709791}
   - {fileID: 621932923}
+  - {fileID: 1894520990}
   - {fileID: 918108100}

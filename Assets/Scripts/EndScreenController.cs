@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,17 @@ public class EndScreenController : MonoBehaviour
     [SerializeField] float scoreMinMultiplier = 1f;
     [SerializeField] float scoreMaxMultiplier = 8f;
 
+    [Header("Buttons")]
+    [Tooltip("Optional extra actions when PLAY AGAIN is pressed (before reload).")]
+    [SerializeField] UnityEvent onPlayAgain;
+
+    [Tooltip("Optional extra actions when QUIT is pressed (before exit).")]
+    [SerializeField] UnityEvent onQuit;
+
+    [Header("Scene")]
+    [Tooltip("If true (dedicated EndScreen scene), runs score presentation on Start. Leave false when this object lives in the level and you call PresentRunEnd from code.")]
+    [SerializeField] bool presentScoresOnStart;
+
     UIDocument _doc;
     bool _buttonsHooked;
     bool _migrationDone;
@@ -25,6 +37,28 @@ public class EndScreenController : MonoBehaviour
     void Awake()
     {
         _doc = GetComponent<UIDocument>();
+    }
+
+    void OnEnable()
+    {
+        if (_doc == null)
+            _doc = GetComponent<UIDocument>();
+        if (_doc != null && _doc.rootVisualElement != null)
+            EnsureButtonsRegistered();
+        else
+            StartCoroutine(RegisterButtonsAfterFirstFrame());
+    }
+
+    IEnumerator RegisterButtonsAfterFirstFrame()
+    {
+        yield return null;
+        EnsureButtonsRegistered();
+    }
+
+    void Start()
+    {
+        if (presentScoresOnStart)
+            PresentRunEnd();
     }
 
     public void PresentRunEnd()
@@ -71,13 +105,9 @@ public class EndScreenController : MonoBehaviour
         if (root == null)
             return;
 
-        root.Q<Button>("PlayAgainButton")?.RegisterCallback<ClickEvent>(_ =>
-        {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        });
+        root.Q<Button>("PlayAgainButton")?.RegisterCallback<ClickEvent>(_ => PlayAgain());
 
-        root.Q<Button>("QuitButton")?.RegisterCallback<ClickEvent>(_ => Quit());
+        root.Q<Button>("QuitButton")?.RegisterCallback<ClickEvent>(_ => QuitGame());
 
         foreach (Button btn in root.Query<Button>().ToList())
         {
@@ -90,6 +120,27 @@ public class EndScreenController : MonoBehaviour
         }
 
         _buttonsHooked = true;
+    }
+
+    public void PlayAgain()
+    {
+        Time.timeScale = 1f;
+        onPlayAgain?.Invoke();
+        string scene = PlayerPrefs.GetString(GameOverPresenter.ReturnGameScenePlayerPrefsKey, "SampleScene");
+        if (string.IsNullOrEmpty(scene))
+            scene = "SampleScene";
+        SceneManager.LoadScene(scene);
+    }
+
+    /// <summary>Exit the application (same as QUIT).</summary>
+    public void QuitGame()
+    {
+        onQuit?.Invoke();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 
     IEnumerator PresentRunEndRoutine()
@@ -321,8 +372,9 @@ public class EndScreenController : MonoBehaviour
         float target = btn.resolvedStyle.width * SwooshCoverage;
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime;
-            swoosh.style.width = target * Mathf.SmoothStep(0f, 1f, elapsed / duration);
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
+            swoosh.style.width = target * t;
             yield return null;
         }
 
@@ -336,8 +388,9 @@ public class EndScreenController : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime;
-            swoosh.style.width = Mathf.Lerp(start, 0f, elapsed / duration);
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            swoosh.style.width = Mathf.Lerp(start, 0f, t);
             yield return null;
         }
 
@@ -362,15 +415,6 @@ public class EndScreenController : MonoBehaviour
 
         t -= 2.625f / 2.75f;
         return 7.5625f * t * t + 0.984375f;
-    }
-
-    static void Quit()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
     }
 }
 

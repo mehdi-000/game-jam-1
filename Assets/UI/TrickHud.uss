@@ -52,6 +52,7 @@
     right: 3px;
     bottom: -3px;
     font-size: 26px;
+    -unity-font-definition: url("project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf");
     -unity-font-style: bold;
     color: #0a0a0a;
     opacity: 0.55;
@@ -60,6 +61,7 @@
 
 .trick-name {
     font-size: 26px;
+    -unity-font-definition: url("project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf");
     -unity-font-style: bold;
     color: #f0efe8;
     -unity-text-outline-width: 2px;
@@ -97,9 +99,9 @@
     color: #44e88c;
 }
 
-.tricks-count {
-    font-size: 28px;
-    color: #ff6b2c;
+.combo-under-score {
+    margin-top: 2px;
+    margin-bottom: 10px;
 }
 
 .distance-value {
@@ -129,7 +131,7 @@
     right: -12px;
     bottom: 2px;
     height: 10px;
-    background-color: rgba(255, 107, 44, 0.35);
+    background-color: rgba(232, 65, 159, 0.35);
     border-radius: 2px;
     rotate: -3deg;
     opacity: 0.85;
@@ -143,7 +145,7 @@
 .combo-mult {
     font-size: 22px;
     -unity-font-style: bold;
-    color: #ff6b2c;
+    color: #E8419F;
     -unity-text-outline-width: 2px;
     -unity-text-outline-color: #0a0a0a;
     margin-right: 8px;
@@ -160,7 +162,7 @@
 }
 
 .combo-dim .combo-mult {
-    color: rgba(255, 107, 44, 0.35);
+    color: rgba(232, 65, 159, 0.35);
 }
 
 .combo-dim .combo-tag {

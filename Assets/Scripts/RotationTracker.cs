@@ -196,6 +196,8 @@ public class RotationTracker : MonoBehaviour //, IHandleRigidbodyData
     /// <summary>
     /// We don't want a completed trick to re-score the same revolution.
     /// </summary>
+
+
     public void ConsumeAccumulatedAlongAxis(int axisIndex, float degreesToRemove)
     {
         if (degreesToRemove <= 0f || axisIndex < 0 || axisIndex > 2)
@@ -221,6 +223,7 @@ public class RotationTracker : MonoBehaviour //, IHandleRigidbodyData
                 break;
         }
     }
+    
 
     public void ResetCombo(float? deltaValue = 0f, Vector3? deltaValues = default)
     {

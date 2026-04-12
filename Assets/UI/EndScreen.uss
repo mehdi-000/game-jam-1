@@ -366,36 +366,36 @@
 .btn-play {
     height: 70px;
     font-size: 30px;
-    background-color: #FFE040;
+    background-color: #FFE03F;
     color: #0a0a0a;
     border-color: #0a0a0a;
-    rotate: -2.5deg;
+    rotate: -1deg;
 }
 
 .btn-play:hover {
-    background-color: #ffea70;
+    background-color: #FFEB6A;
     border-color: #f0efe8;
 }
 
 .btn-play:active {
-    background-color: #ddc030;
+    background-color: #E5C82A;
 }
 
 .btn-quit {
     height: 54px;
     font-size: 18px;
-    background-color: rgba(136, 136, 136, 0.04);
-    color: rgba(160, 160, 160, 0.55);
-    border-color: rgba(136, 136, 136, 0.28);
-    rotate: -1.2deg;
+    background-color: rgba(28, 22, 42, 0.72);
+    color: #f4f0ff;
+    border-color: #1a1428;
+    rotate: 0.7deg;
 }
 
 .btn-quit:hover {
-    background-color: rgba(160, 160, 160, 0.1);
-    color: rgba(190, 190, 190, 0.75);
-    border-color: rgba(160, 160, 160, 0.45);
+    background-color: rgba(38, 30, 56, 0.88);
+    color: #ffffff;
+    border-color: #0a0a0a;
 }
 
 .btn-quit:active {
-    background-color: rgba(160, 160, 160, 0.16);
+    background-color: rgba(22, 18, 34, 0.95);
 }

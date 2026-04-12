@@ -1,22 +1,24 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=9c412b630bbad480a8df40e7d10ff3c6&amp;type=3#MainMenu"/>
-    <ui:VisualElement name="Root" class="root" style="color: rgb(179, 217, 179); background-color: rgb(17, 34, 24);">
+    <ui:VisualElement name="Root" class="root">
         <ui:VisualElement name="Content" class="content">
-            <ui:Image source="project://database/Assets/Images/FrogStylerLogo.png?fileID=2800000&amp;guid=fc49605fed7d64d0aae682ebfc719630&amp;type=3#FrogStylerLogo" style="height: 300px; background-image: none;"/>
+            <ui:Image source="project://database/Assets/Images/FrogStylerLogo.png?fileID=2800000&amp;guid=fc49605fed7d64d0aae682ebfc719630&amp;type=3#FrogStylerLogo" class="logo-image"/>
             <ui:VisualElement name="TitleBlock" class="title-block"/>
-            <ui:VisualElement class="divider"/>
             <ui:VisualElement name="Buttons" class="buttons">
-                <ui:Button name="PlayButton" text="PLAY" class="btn btn-play">
+                <ui:Button name="PlayButton" text="PLAY" class="btn btn-play" style="-unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=831cabe65a3a7438fbec05c3566041e4&amp;type=3#NotInter-Regular&quot;);">
                     <ui:VisualElement class="btn-swoosh"/>
                 </ui:Button>
-                <ui:Button name="SettingsButton" text="SETTINGS" class="btn btn-settings" style="background-color: rgb(94, 209, 66);">
+                <ui:Button name="BoostedButton" text="BOOSTED" class="btn btn-boosted">
+                    <ui:VisualElement class="btn-swoosh"/>
+                </ui:Button>
+                <ui:Button name="SettingsButton" text="SETTINGS" class="btn btn-settings">
                     <ui:VisualElement class="btn-swoosh"/>
                 </ui:Button>
                 <ui:Button name="QuitButton" text="QUIT" class="btn btn-quit">
                     <ui:VisualElement class="btn-swoosh"/>
                 </ui:Button>
             </ui:VisualElement>
-            <ui:Label text="GAME JAM 2026" class="bottom-tag"/>
+            <ui:Label text="GAME JAM 2026" class="bottom-tag" style="font-size: 15px; margin-left: 2px; margin-bottom: 20px; padding-bottom: 10px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

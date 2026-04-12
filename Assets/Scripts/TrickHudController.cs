@@ -12,7 +12,6 @@ public class TrickHudController : MonoBehaviour
     Label _trickShadow;
     Label _score;
     Label _insects;
-    Label _tricks;
     Label _distance;
     Label _mult;
     VisualElement _comboBlock;
@@ -36,7 +35,6 @@ public class TrickHudController : MonoBehaviour
         _trickShadow = root.Q<Label>("TrickShadow");
         _score = root.Q<Label>("ScoreValue");
         _insects = root.Q<Label>("InsectEatenValue");
-        _tricks = root.Q<Label>("TricksCountValue");
         _distance = root.Q<Label>("DistanceValue");
         _mult = root.Q<Label>("MultiplierValue");
         _comboBlock = root.Q<VisualElement>("ComboBlock");
@@ -45,7 +43,6 @@ public class TrickHudController : MonoBehaviour
         if (_trickShadow != null) _trickShadow.text = "";
         if (_score != null) _score.text = GameScore.CurrentScore.ToString();
         if (_insects != null) _insects.text = GameScore.CurrentInsectsEaten.ToString();
-        if (_tricks != null) _tricks.text = GameScore.TricksLandedCount.ToString();
         RefreshDistanceLabel();
         UpdateMultiplierLabel(2);
 
@@ -91,9 +88,6 @@ public class TrickHudController : MonoBehaviour
             _score.text = totalScore.ToString();
             StartCoroutine(ScorePunch(_score));
         }
-
-        if (_tricks != null)
-            _tricks.text = GameScore.TricksLandedCount.ToString();
 
         UpdateMultiplierLabel(multiplier);
         if (_comboBlock != null)

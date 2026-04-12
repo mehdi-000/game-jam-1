@@ -21,6 +21,11 @@ public class MainMenuController : MonoBehaviour
             SceneManager.LoadScene("SampleScene");
         });
 
+        root.Q<Button>("BoostedButton").RegisterCallback<ClickEvent>(_ =>
+        {
+            SceneManager.LoadScene("Boosted");
+        });
+
         root.Q<Button>("QuitButton").RegisterCallback<ClickEvent>(_ => Quit());
 
         foreach (Button btn in buttons)

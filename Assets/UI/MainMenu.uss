@@ -3,11 +3,11 @@
 
    Palette
    ───────
-   bg          #0b0b18   dark wall
-   yellow      #ffe040   neon yellow (PLAY)
-   green       #44e88c   fresh mint green (SETTINGS)
-   grey        #888888   muted (QUIT)
-   white       #f0efe8   spray-paint white (titles)
+   bg          #AC9EDB   light violet (matches editor tint)
+   yellow      #FFE03F   PLAY
+   green       #5ED142   SETTINGS
+   pink        #E8419F   BOOSTED
+   quit        dark panel + light text (readable on violet)
    ink         #0a0a0a   outlines
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -19,7 +19,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #0b0b18;
+    background-color: #AC9EDB;
     overflow: hidden;
 }
 
@@ -33,19 +33,19 @@
 
 .bg-stripe-1 {
     height: 130px;
-    background-color: rgba(255, 224, 64, 0.04);
+    background-color: rgba(94, 209, 66, 0.04);
     top: 10%;
 }
 
 .bg-stripe-2 {
     height: 60px;
-    background-color: rgba(68, 232, 140, 0.03);
+    background-color: rgba(94, 209, 66, 0.03);
     bottom: 16%;
 }
 
 .bg-stripe-3 {
     height: 40px;
-    background-color: rgba(255, 224, 64, 0.025);
+    background-color: rgba(255, 224, 64, 0.03);
     top: 48%;
 }
 
@@ -67,8 +67,8 @@
 .dot-2 {
     width: 9px;
     height: 9px;
-    background-color: #44e88c;
-    opacity: 0.14;
+    background-color: #5ED142;
+    opacity: 0.18;
     top: 72%;
     left: 82%;
 }
@@ -85,10 +85,17 @@
 .dot-4 {
     width: 7px;
     height: 7px;
-    background-color: #44e88c;
-    opacity: 0.18;
+    background-color: #5ED142;
+    opacity: 0.22;
     top: 30%;
     left: 78%;
+}
+
+.logo-image {
+    height: 620px;
+    width: 760px;
+    margin-bottom: -6px;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
 .content {
@@ -149,10 +156,10 @@
 .divider {
     width: 200px;
     height: 3px;
-    background-color: rgba(255, 224, 64, 0.18);
+    background-color: rgba(94, 209, 66, 0.22);
     border-radius: 2px;
-    margin-bottom: 40px;
-    rotate: -1deg;
+    margin-bottom: 36px;
+    rotate: -1.2deg;
 }
 
 .buttons {
@@ -163,7 +170,7 @@
 .btn {
     width: 340px;
     overflow: hidden;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     border-radius: 3px;
     -unity-font-style: bold;
     -unity-text-align: middle-left;
@@ -191,61 +198,80 @@
 .btn-play {
     height: 70px;
     font-size: 30px;
-    background-color: #ffe040;
+    background-color: #FFE03F;
     color: #0a0a0a;
     border-color: #0a0a0a;
-    rotate: -2.5deg;
+    rotate: -1deg;
 }
 
 .btn-play:hover {
-    background-color: #ffea70;
+    background-color: #FFEB6A;
     border-color: #f0efe8;
 }
 
 .btn-play:active {
-    background-color: #ddc030;
+    background-color: #E5C82A;
+}
+
+.btn-boosted {
+    height: 54px;
+    font-size: 18px;
+    background-color: #E8419F;
+    color: #f0efe8;
+    border-color: #0a0a0a;
+    rotate: 1deg;
+    letter-spacing: 1px;
+}
+
+.btn-boosted:hover {
+    background-color: #FF59B5;
+    border-color: #f0efe8;
+}
+
+.btn-boosted:active {
+    background-color: #C03385;
 }
 
 .btn-settings {
     height: 54px;
     font-size: 18px;
-    background-color: #39ff14;
+    background-color: #5ED142;
     color: #0a0a0a;
     border-color: #0a0a0a;
-    rotate: 1.8deg;
+    rotate: -0.8deg;
 }
 
 .btn-settings:hover {
-    background-color: #66ff4a;
+    background-color: #7AE860;
     border-color: #f0efe8;
 }
 
 .btn-settings:active {
-    background-color: #2ccc10;
+    background-color: #47A830;
 }
 
 .btn-quit {
     height: 54px;
     font-size: 18px;
-    background-color: rgba(136, 136, 136, 0.04);
-    color: rgba(160, 160, 160, 0.55);
-    border-color: rgba(136, 136, 136, 0.28);
-    rotate: -1.2deg;
+    background-color: rgba(28, 22, 42, 0.72);
+    color: #f4f0ff;
+    border-color: #1a1428;
+    rotate: 0.7deg;
 }
 
 .btn-quit:hover {
-    background-color: rgba(160, 160, 160, 0.1);
-    color: rgba(190, 190, 190, 0.75);
-    border-color: rgba(160, 160, 160, 0.45);
+    background-color: rgba(38, 30, 56, 0.88);
+    color: #ffffff;
+    border-color: #0a0a0a;
 }
 
 .btn-quit:active {
-    background-color: rgba(160, 160, 160, 0.16);
+    background-color: rgba(22, 18, 34, 0.95);
 }
 
 .bottom-tag {
     font-size: 11px;
-    color: rgba(240, 239, 232, 0.14);
+    color: rgba(40, 32, 58, 0.55);
     -unity-font-style: bold;
     margin-top: 52px;
 }

@@ -16,7 +16,7 @@ public class TrickComboController : MonoBehaviour
     [SerializeField] private float comboResetSeconds = 3.2f;
     [SerializeField] private int basePointsPerTrick = 100;
     [Tooltip("Multiplier is 2^min(comboChain, maxComboExponent). Caps at 2^maxComboExponent.")]
-    [SerializeField] private int maxComboExponent = 3;
+    [SerializeField] private int maxComboExponent = 5;
 
     int _comboChain;
     float _comboTimer;

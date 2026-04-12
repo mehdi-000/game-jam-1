@@ -7,27 +7,23 @@
                 <ui:Label name="TrickName" text="" class="trick-name"/>
             </ui:VisualElement>
             <ui:VisualElement class="score-row">
-                <ui:Label text="SCORE" class="score-caption"/>
+                <ui:Label text="SCORE" class="score-caption" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
                 <ui:Label name="ScoreValue" text="0" class="score-value"/>
             </ui:VisualElement>
-            <ui:VisualElement class="score-row">
-                <ui:Label text="INSECTS" class="score-caption"/>
-                <ui:Label name="InsectEatenValue" text="0" class="score-value insect-count"/>
-            </ui:VisualElement>
-            <ui:VisualElement class="score-row">
-                <ui:Label text="TRICKS" class="score-caption"/>
-                <ui:Label name="TricksCountValue" text="0" class="score-value tricks-count"/>
-            </ui:VisualElement>
-            <ui:VisualElement class="score-row">
-                <ui:Label text="DIST" class="score-caption"/>
-                <ui:Label name="DistanceValue" text="0 m" class="score-value distance-value"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="ComboBlock" class="combo-block">
+            <ui:VisualElement name="ComboBlock" class="combo-block combo-under-score">
                 <ui:VisualElement class="combo-fire"/>
                 <ui:VisualElement class="combo-line">
                     <ui:Label name="MultiplierValue" text="2x" class="combo-mult"/>
-                    <ui:Label text="COMBO" class="combo-tag"/>
+                    <ui:Label text="COMBO" class="combo-tag" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
                 </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="score-row">
+                <ui:Label text="INSECTS" class="score-caption" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
+                <ui:Label name="InsectEatenValue" text="0" class="score-value insect-count"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="score-row">
+                <ui:Label text="DISTANCE" class="score-caption" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
+                <ui:Label name="DistanceValue" text="0 m" class="score-value distance-value"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

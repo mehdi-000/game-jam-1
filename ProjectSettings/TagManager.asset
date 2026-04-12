@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Stickable
   - Target
+  - Finish
   layers:
   - Default
   - TransparentFX
