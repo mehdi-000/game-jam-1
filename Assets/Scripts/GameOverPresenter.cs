@@ -21,8 +21,14 @@ public class GameOverPresenter : MonoBehaviour
     [Tooltip("Seconds to wait after a valid finish before loading the end screen scene (uses unscaled time).")]
     [SerializeField] float endScreenDelaySeconds = 0.75f;
 
+    [Tooltip("If enabled, loads End Screen Boosted instead of the default end screen (e.g. put this on the frog in the Boosted level).")]
+    [SerializeField] bool useBoostedEndScreen;
+
     [Tooltip("Must be added to File → Build Settings. Uses dedicated scene so UI Toolkit buttons receive input reliably.")]
     [SerializeField] string endScreenSceneName = "EndScreen";
+
+    [Tooltip("Used when Use Boosted End Screen is enabled. Scene file name without .unity (must be in Build Settings).")]
+    [SerializeField] string endScreenBoostedSceneName = "EndScreen Boosted";
 
     bool _gameOver;
     readonly HashSet<Collider> _activeFinishColliders = new HashSet<Collider>();
@@ -125,7 +131,8 @@ public class GameOverPresenter : MonoBehaviour
 
         PlayerPrefs.SetString(ReturnGameScenePlayerPrefsKey, SceneManager.GetActiveScene().name);
         PlayerPrefs.Save();
-        SceneManager.LoadScene(endScreenSceneName);
+        string endScene = useBoostedEndScreen ? endScreenBoostedSceneName : endScreenSceneName;
+        SceneManager.LoadScene(endScene);
     }
 
     static bool HasTopSurfaceContact(Collision collision, float minUpDot)

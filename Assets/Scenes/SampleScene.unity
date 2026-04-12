@@ -1156,6 +1156,8 @@ MonoBehaviour:
   scoreMinMultiplier: 1
   scoreMaxMultiplier: 8
   presentScoresOnStart: 0
+  playAgainBoostedMode: 0
+  mainMenuSceneName: Menu
 --- !u!1 &820676460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1364,8 +1366,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameOverPresenter
   minContactUpNormal: 0.45
   frogMaxWorldYForFinish: -4.25
+  minTimeInFinishBeforeGameOver: 0.45
   endScreenDelaySeconds: 0.75
+  useBoostedEndScreen: 0
   endScreenSceneName: EndScreen
+  endScreenBoostedSceneName: EndScreen Boosted
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2255,12 +2260,14 @@ MonoBehaviour:
   maxDistanceBetweenSpawns: 40
   spawnAheadMin: 16
   spawnAheadMax: 48
-  verticalSpread: 6
+  verticalSpread: 20
+  spawnOutsideMargin: 2
   player: {fileID: 820676463}
   enemyPrefabs:
   - {fileID: 6666562745563987879, guid: ea87d6ef19f3a4702b75e53a3c81d64b, type: 3}
   - {fileID: 497679297325174976, guid: 5739a02bc0ed741029ae1fb249c31925, type: 3}
   - {fileID: 1910106811813643326, guid: 9c2f0ae87afd8bb44844837096d2da3c, type: 3}
+  spawnCamera: {fileID: 0}
 --- !u!1 &1636503889
 GameObject:
   m_ObjectHideFlags: 0

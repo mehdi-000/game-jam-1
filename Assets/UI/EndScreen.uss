@@ -448,21 +448,20 @@
     background-color: #E5C82A;
 }
 
-.btn-quit {
+.btn-menu {
     height: 54px;
     font-size: 18px;
-    background-color: rgba(28, 22, 42, 0.72);
-    color: #f4f0ff;
+    background-color: rgba(244, 240, 255, 0.92);
+    color: #1a1428;
     border-color: #1a1428;
-    rotate: 0.7deg;
+    rotate: 0.4deg;
 }
 
-.btn-quit:hover {
-    background-color: rgba(38, 30, 56, 0.88);
-    color: #ffffff;
-    border-color: #0a0a0a;
+.btn-menu:hover {
+    background-color: #ffffff;
+    border-color: #5ED142;
 }
 
-.btn-quit:active {
-    background-color: rgba(22, 18, 34, 0.95);
+.btn-menu:active {
+    background-color: rgba(220, 210, 245, 0.95);
 }

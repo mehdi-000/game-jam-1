@@ -71,7 +71,7 @@
                 <ui:Button name="PlayAgainButton" text="PLAY AGAIN" class="btn btn-play">
                     <ui:VisualElement class="btn-swoosh"/>
                 </ui:Button>
-                <ui:Button name="QuitButton" text="QUIT" class="btn btn-quit">
+                <ui:Button name="MenuButton" text="MENU" class="btn btn-menu">
                     <ui:VisualElement class="btn-swoosh"/>
                 </ui:Button>
             </ui:VisualElement>

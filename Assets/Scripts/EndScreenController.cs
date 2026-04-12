@@ -22,12 +22,19 @@ public class EndScreenController : MonoBehaviour
     [Tooltip("If true (dedicated EndScreen scene), runs score presentation on Start. Leave false when this object lives in the level and you call PresentRunEnd from code.")]
     [SerializeField] bool presentScoresOnStart = true;
 
+    [Header("Play again")]
+    [Tooltip("When no return scene was saved (e.g. embedded end UI), Play Again loads Boosted if true, otherwise SampleScene. After a normal game over, GameOverPresenter saves the scene you played and that takes precedence.")]
+    [SerializeField] bool playAgainBoostedMode;
+
+    [Tooltip("Main menu scene (File → Build Settings).")]
+    [SerializeField] string mainMenuSceneName = "Menu";
+
     UIDocument _doc;
     bool _migrationDone;
     bool _actionButtonsWired;
 
     Button _playAgainButton;
-    Button _quitButton;
+    Button _menuButton;
 
     void Awake()
     {
@@ -62,11 +69,11 @@ public class EndScreenController : MonoBehaviour
             return;
 
         _playAgainButton = root.Q<Button>("PlayAgainButton");
-        _quitButton = root.Q<Button>("QuitButton");
+        _menuButton = root.Q<Button>("MenuButton");
         if (_playAgainButton != null)
             _playAgainButton.clicked += PlayAgain;
-        if (_quitButton != null)
-            _quitButton.clicked += QuitGame;
+        if (_menuButton != null)
+            _menuButton.clicked += GoToMainMenu;
 
         foreach (Button btn in root.Query<Button>().ToList())
         {
@@ -85,8 +92,8 @@ public class EndScreenController : MonoBehaviour
     {
         if (_playAgainButton != null)
             _playAgainButton.clicked -= PlayAgain;
-        if (_quitButton != null)
-            _quitButton.clicked -= QuitGame;
+        if (_menuButton != null)
+            _menuButton.clicked -= GoToMainMenu;
     }
 
     public void PresentRunEnd()
@@ -128,20 +135,18 @@ public class EndScreenController : MonoBehaviour
 
     public void PlayAgain()
     {
-        string scene = PlayerPrefs.GetString(GameOverPresenter.ReturnGameScenePlayerPrefsKey, "SampleScene");
+        string fallback = playAgainBoostedMode ? "Boosted" : "SampleScene";
+        string scene = PlayerPrefs.GetString(GameOverPresenter.ReturnGameScenePlayerPrefsKey, fallback);
         if (string.IsNullOrEmpty(scene))
-            scene = "SampleScene";
+            scene = fallback;
         SceneManager.LoadScene(scene);
     }
 
-    /// <summary>Exit the application (same as QUIT).</summary>
-    public void QuitGame()
+    public void GoToMainMenu()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        if (string.IsNullOrEmpty(mainMenuSceneName))
+            return;
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     IEnumerator PresentRunEndRoutine()
