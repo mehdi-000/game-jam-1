@@ -36,7 +36,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="MultiplierDetailBlock" class="multiplier-detail-block">
-                <ui:Label text="RUN BONUS (adds on top of ×1)" class="multiplier-detail-header"/>
+                <ui:Label text="RUN BONUS" class="multiplier-detail-header"/>
                 <ui:VisualElement class="mult-detail-row">
                     <ui:Label text="Insects" class="mult-detail-caption"/>
                     <ui:Label name="MultFromInsects" text="+0.00" class="mult-detail-value"/>
@@ -45,19 +45,15 @@
                     <ui:Label text="Distance" class="mult-detail-caption"/>
                     <ui:Label name="MultFromDistance" text="+0.00" class="mult-detail-value"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="MultClampRow" class="mult-clamp-row hide">
-                    <ui:Label name="MultUncappedValue" text="" class="mult-clamp-text"/>
-                </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="MultiplierRow" class="multiplier-row multiplier-row-boosted">
-                <ui:Label text="APPLIED BONUS" class="band-caption multiplier-caption-boosted"/>
+                <ui:Label text="MULTIPLIER" class="band-caption multiplier-caption-boosted"/>
                 <ui:Label name="BonusMultiplierValue" text="×1.00" class="band-number multiplier-number-boosted"/>
             </ui:VisualElement>
             <ui:VisualElement name="FinalBlock" class="score-block">
                 <ui:VisualElement class="score-band score-band-current score-band-final">
                     <ui:VisualElement class="final-score-col">
-                        <ui:Label text="FINAL" class="band-caption"/>
-                        <ui:Label name="FinalEquationLabel" text="" class="equation-line"/>
+                        <ui:Label text="FINAL SCORE" class="band-caption"/>
                     </ui:VisualElement>
                     <ui:Label name="FinalRunValue" text="0" class="band-number number-current"/>
                 </ui:VisualElement>
