@@ -10,13 +10,16 @@ public class FrogController : MonoBehaviour
     [SerializeField] private Vector3 spawnPosition;
 
     [Header("Legs")]
-    [SerializeField] private SpringJoint leftLeg, rightLeg;
+    [SerializeField] private SpringJoint leftLeg;
+    [SerializeField] private SpringJoint rightLeg;
     [SerializeField] private Rigidbody leftLegRb, rightLegRb;
 
     [Header("Tongue")]
     [SerializeField] private SpringJoint tongue;
     [SerializeField] private Rigidbody tongueRb;
     [SerializeField] private Collider tongueCollider;
+    [SerializeField] private Vector3 tongueOffset = new Vector3(0f, 0.9f, -0.7f); // Offset from the frog's position to the base of the tongue
+    [SerializeField] private LineRenderer tongueRenderer;
 
     [Header("Tongue Parameters")]
     [SerializeField] private Transform mouseTransform3D;
@@ -148,6 +151,16 @@ public class FrogController : MonoBehaviour
 
         AimTongue();
     }
+
+    private void LateUpdate()
+    {
+        if (tongueRb != null)
+        {
+            tongueRenderer.SetPosition(0, transform.position + transform.TransformDirection(tongueOffset));
+            tongueRenderer.SetPosition(1, tongueRb.position);
+        }
+    }
+
     #endregion
 
     // if the collider of the tongue hits something, try sticking to it
@@ -241,6 +254,9 @@ public class FrogController : MonoBehaviour
         tongueRb.isKinematic = true;
 
         isTongueSticking = true;
+
+        //tongueRenderer.enabled = true;
+        tongueRenderer.SetPosition(1, tongueRb.position);
     }
 
     public void ReleaseTongue()
@@ -256,6 +272,8 @@ public class FrogController : MonoBehaviour
 
         isTongueSticking = false;
         timeSinceTongueRelease = 0f;
+
+        //tongueRenderer.enabled = false;
     }
 
     /// <summary>
