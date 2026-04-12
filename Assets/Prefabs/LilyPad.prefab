@@ -162,9 +162,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   graphicObjects:
   - {fileID: 1437809107643127759}
-  spawnHeight: -2.8
+  spawnHeight: -2.4
   floatTime: 3
-  destroyAfterTime: 35
+  destroyAfterTime: 50
   sinkingSpeed: 15
 --- !u!33 &2041788348376906752
 MeshFilter:
