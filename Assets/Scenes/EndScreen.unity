@@ -377,17 +377,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndScreenController
   scoreKInsects: 0.04
-  scoreKTricks: 0.03
   scoreKDistance: 0.015
   scoreMinMultiplier: 1
   scoreMaxMultiplier: 8
   presentScoresOnStart: 1
-  onPlayAgain:
-    m_PersistentCalls:
-      m_Calls: []
-  onQuit:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

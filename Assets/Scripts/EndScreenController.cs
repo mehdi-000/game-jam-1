@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -14,56 +14,86 @@ public class EndScreenController : MonoBehaviour
 
     [Header("Final score multiplier tuning")]
     [SerializeField] float scoreKInsects = 0.04f;
-    [SerializeField] float scoreKTricks = 0.03f;
     [SerializeField] float scoreKDistance = 0.015f;
     [SerializeField] float scoreMinMultiplier = 1f;
     [SerializeField] float scoreMaxMultiplier = 8f;
 
-    [Header("Buttons")]
-    [Tooltip("Optional extra actions when PLAY AGAIN is pressed (before reload).")]
-    [SerializeField] UnityEvent onPlayAgain;
-
-    [Tooltip("Optional extra actions when QUIT is pressed (before exit).")]
-    [SerializeField] UnityEvent onQuit;
-
     [Header("Scene")]
     [Tooltip("If true (dedicated EndScreen scene), runs score presentation on Start. Leave false when this object lives in the level and you call PresentRunEnd from code.")]
-    [SerializeField] bool presentScoresOnStart;
+    [SerializeField] bool presentScoresOnStart = true;
 
     UIDocument _doc;
-    bool _buttonsHooked;
     bool _migrationDone;
+    bool _actionButtonsWired;
+
+    Button _playAgainButton;
+    Button _quitButton;
 
     void Awake()
     {
         _doc = GetComponent<UIDocument>();
+        EnsureUiEventSystem.EnsureExists();
     }
 
-    void OnEnable()
+    IEnumerator Start()
     {
-        if (_doc == null)
-            _doc = GetComponent<UIDocument>();
-        if (_doc != null && _doc.rootVisualElement != null)
-            EnsureButtonsRegistered();
-        else
-            StartCoroutine(RegisterButtonsAfterFirstFrame());
-    }
+        while (_doc != null && _doc.rootVisualElement == null)
+            yield return null;
 
-    IEnumerator RegisterButtonsAfterFirstFrame()
-    {
         yield return null;
-        EnsureButtonsRegistered();
+
+        if (_doc != null && _doc.rootVisualElement != null)
+            WireActionButtons(_doc.rootVisualElement);
+
+        if (presentScoresOnStart)
+        {
+            MigrateLegacyBestOnce();
+            yield return PresentRunEndRoutine();
+        }
     }
 
-    void Start()
+    /// <summary>
+    /// Prefer <see cref="Button.clicked"/> (Toolkit’s channel for activation) after the UIDocument
+    /// tree exists; <see cref="MainMenuController"/> uses the same scene-wide EventSystem + clicks.
+    /// </summary>
+    void WireActionButtons(VisualElement root)
     {
-        if (presentScoresOnStart)
-            PresentRunEnd();
+        if (_actionButtonsWired || root == null)
+            return;
+
+        _playAgainButton = root.Q<Button>("PlayAgainButton");
+        _quitButton = root.Q<Button>("QuitButton");
+        if (_playAgainButton != null)
+            _playAgainButton.clicked += PlayAgain;
+        if (_quitButton != null)
+            _quitButton.clicked += QuitGame;
+
+        foreach (Button btn in root.Query<Button>().ToList())
+        {
+            var swoosh = btn.Q<VisualElement>(className: "btn-swoosh");
+            if (swoosh != null)
+            {
+                btn.RegisterCallback<MouseEnterEvent>(_ => StartCoroutine(SwooshIn(swoosh, btn)));
+                btn.RegisterCallback<MouseLeaveEvent>(_ => StartCoroutine(SwooshOut(swoosh)));
+            }
+        }
+
+        _actionButtonsWired = true;
+    }
+
+    void OnDestroy()
+    {
+        if (_playAgainButton != null)
+            _playAgainButton.clicked -= PlayAgain;
+        if (_quitButton != null)
+            _quitButton.clicked -= QuitGame;
     }
 
     public void PresentRunEnd()
     {
         MigrateLegacyBestOnce();
+        if (_doc != null && _doc.rootVisualElement != null)
+            WireActionButtons(_doc.rootVisualElement);
         StartCoroutine(PresentRunEndRoutine());
     }
 
@@ -96,36 +126,8 @@ public class EndScreenController : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    void EnsureButtonsRegistered()
-    {
-        if (_buttonsHooked)
-            return;
-
-        var root = _doc.rootVisualElement;
-        if (root == null)
-            return;
-
-        root.Q<Button>("PlayAgainButton")?.RegisterCallback<ClickEvent>(_ => PlayAgain());
-
-        root.Q<Button>("QuitButton")?.RegisterCallback<ClickEvent>(_ => QuitGame());
-
-        foreach (Button btn in root.Query<Button>().ToList())
-        {
-            var swoosh = btn.Q<VisualElement>(className: "btn-swoosh");
-            if (swoosh != null)
-            {
-                btn.RegisterCallback<MouseEnterEvent>(_ => StartCoroutine(SwooshIn(swoosh, btn)));
-                btn.RegisterCallback<MouseLeaveEvent>(_ => StartCoroutine(SwooshOut(swoosh)));
-            }
-        }
-
-        _buttonsHooked = true;
-    }
-
     public void PlayAgain()
     {
-        Time.timeScale = 1f;
-        onPlayAgain?.Invoke();
         string scene = PlayerPrefs.GetString(GameOverPresenter.ReturnGameScenePlayerPrefsKey, "SampleScene");
         if (string.IsNullOrEmpty(scene))
             scene = "SampleScene";
@@ -135,7 +137,6 @@ public class EndScreenController : MonoBehaviour
     /// <summary>Exit the application (same as QUIT).</summary>
     public void QuitGame()
     {
-        onQuit?.Invoke();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -151,8 +152,6 @@ public class EndScreenController : MonoBehaviour
         if (root == null)
             yield break;
 
-        EnsureButtonsRegistered();
-
         int trickPts = GameScore.CurrentScore;
         int insects = GameScore.CurrentInsectsEaten;
         int tricks = GameScore.TricksLandedCount;
@@ -161,34 +160,57 @@ public class EndScreenController : MonoBehaviour
         var tuning = new RunScoreTuning
         {
             KInsects = scoreKInsects,
-            KTricks = scoreKTricks,
             KDistance = scoreKDistance,
             MinMultiplier = scoreMinMultiplier,
             MaxMultiplier = scoreMaxMultiplier,
         };
 
-        float mult = RunScoreCalculator.GetBonusMultiplier(insects, tricks, dist, tuning);
-        int finalScore = RunScoreCalculator.ComputeFinalScore(trickPts, insects, tricks, dist, tuning);
+        RunScoreBreakdown breakdown = RunScoreCalculator.GetBreakdown(insects, dist, tuning);
+        float mult = breakdown.ClampedMultiplier;
+        int finalScore = RunScoreCalculator.ComputeFinalScore(trickPts, insects, dist, tuning);
         int bestBefore = GetBestFinalScore();
 
         var lblFlip = root.Q<Label>("BreakdownFlipPoints");
         var lblIns = root.Q<Label>("BreakdownInsects");
         var lblTrk = root.Q<Label>("BreakdownTricks");
         var lblDist = root.Q<Label>("BreakdownDistance");
+        var lblMultFromIns = root.Q<Label>("MultFromInsects");
+        var lblMultFromDist = root.Q<Label>("MultFromDistance");
+        var lblMultRaw = root.Q<Label>("MultUncappedValue");
+        var multClampRow = root.Q<VisualElement>("MultClampRow");
         var lblMult = root.Q<Label>("BonusMultiplierValue");
         var lblFinal = root.Q<Label>("FinalRunValue");
+        var lblEquation = root.Q<Label>("FinalEquationLabel");
         var lblBest = root.Q<Label>("FinalBestValue");
 
         if (lblFlip != null) lblFlip.text = "0";
         if (lblIns != null) lblIns.text = "0";
         if (lblTrk != null) lblTrk.text = "0";
         if (lblDist != null) lblDist.text = "0";
+        if (lblMultFromIns != null) lblMultFromIns.text = "+0.00";
+        if (lblMultFromDist != null) lblMultFromDist.text = "+0.00";
+        if (lblMultRaw != null) lblMultRaw.text = "";
+        if (multClampRow != null) multClampRow.AddToClassList("hide");
         if (lblMult != null) lblMult.text = "×1.00";
-        if (lblFinal != null) lblFinal.text = "0";
-        if (lblBest != null) lblBest.text = bestBefore.ToString();
+        if (lblFinal != null)
+        {
+            lblFinal.text = "0";
+            lblFinal.RemoveFromClassList("number-current--compact");
+        }
+
+        if (lblBest != null)
+            lblBest.RemoveFromClassList("number-best--compact");
+
+        if (lblEquation != null) lblEquation.text = "";
+        if (lblBest != null)
+        {
+            lblBest.text = bestBefore.ToString();
+            ApplyScoreDigitCompactClass(lblBest, bestBefore, "number-best--compact");
+        }
 
         var titleBlock = root.Q<VisualElement>("TitleBlock");
         var breakdownBlock = root.Q<VisualElement>("BreakdownBlock");
+        var multiplierDetailBlock = root.Q<VisualElement>("MultiplierDetailBlock");
         var multiplierRow = root.Q<VisualElement>("MultiplierRow");
         var finalBlock = root.Q<VisualElement>("FinalBlock");
         var buttons = root.Query<Button>().ToList();
@@ -200,7 +222,7 @@ public class EndScreenController : MonoBehaviour
             titleBlock.transform.scale = new Vector3(0.75f, 0.75f, 1f);
         }
 
-        foreach (var el in new[] { breakdownBlock, multiplierRow, finalBlock })
+        foreach (var el in new[] { breakdownBlock, multiplierDetailBlock, multiplierRow, finalBlock })
         {
             if (el != null)
             {
@@ -229,20 +251,43 @@ public class EndScreenController : MonoBehaviour
             yield return StartCoroutine(CountUpFloatUnscaled(lblDist, 0f, dist, 0.32f, true));
         }
 
+        if (multiplierDetailBlock != null)
+        {
+            yield return StartCoroutine(ScalePopInUnscaled(multiplierDetailBlock, 0.18f));
+            yield return StartCoroutine(CountUpFloatContributionUnscaled(lblMultFromIns, 0f, breakdown.ContribInsects, 0.32f));
+            yield return StartCoroutine(CountUpFloatContributionUnscaled(lblMultFromDist, 0f, breakdown.ContribDistance, 0.3f));
+        }
+
+        if (breakdown.WasClamped && multClampRow != null && lblMultRaw != null)
+        {
+            multClampRow.RemoveFromClassList("hide");
+            if (breakdown.RawMultiplier < scoreMinMultiplier)
+                lblMultRaw.text = $"Raw ×{breakdown.RawMultiplier:F2} (raised to min ×{scoreMinMultiplier:F2})";
+            else
+                lblMultRaw.text = $"Raw ×{breakdown.RawMultiplier:F2} (capped at ×{scoreMaxMultiplier:F0})";
+        }
+
         if (multiplierRow != null)
             yield return StartCoroutine(ScalePopInUnscaled(multiplierRow, 0.2f));
 
         yield return StartCoroutine(CountUpMultiplierUnscaled(lblMult, 1f, mult, 0.55f));
 
+        if (lblEquation != null)
+            lblEquation.text = $"{FormatScore(trickPts)} × {mult:F2} =";
+
         if (finalBlock != null)
             yield return StartCoroutine(ScalePopInUnscaled(finalBlock, 0.26f));
 
         yield return StartCoroutine(CountUpIntUnscaled(lblFinal, 0, finalScore, 0.65f));
+        ApplyScoreDigitCompactClass(lblFinal, finalScore, "number-current--compact");
 
         SaveBestIfImproved(finalScore);
         int bestAfter = GetBestFinalScore();
         if (lblBest != null)
+        {
             lblBest.text = bestAfter.ToString();
+            ApplyScoreDigitCompactClass(lblBest, bestAfter, "number-best--compact");
+        }
 
         yield return new WaitForSecondsRealtime(0.08f);
 
@@ -329,6 +374,51 @@ public class EndScreenController : MonoBehaviour
         label.text = asMeters ? $"{Mathf.FloorToInt(to)} m" : to.ToString("F0");
     }
 
+    IEnumerator CountUpFloatContributionUnscaled(Label label, float from, float to, float duration)
+    {
+        if (label == null)
+            yield break;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            t = Mathf.SmoothStep(0f, 1f, t);
+            float v = Mathf.Lerp(from, to, t);
+            label.text = "+" + v.ToString("F2");
+            yield return null;
+        }
+
+        label.text = "+" + to.ToString("F2");
+    }
+
+    static string FormatScore(int value)
+    {
+        if (value < 0)
+            return "0";
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    static void ApplyScoreDigitCompactClass(Label label, int value, string compactClass)
+    {
+        if (label == null || string.IsNullOrEmpty(compactClass))
+            return;
+
+        int digits = value == 0 ? 1 : 0;
+        int v = Mathf.Abs(value);
+        while (v > 0)
+        {
+            digits++;
+            v /= 10;
+        }
+
+        if (digits > 7)
+            label.AddToClassList(compactClass);
+        else
+            label.RemoveFromClassList(compactClass);
+    }
+
     IEnumerator CountUpMultiplierUnscaled(Label label, float from, float to, float duration)
     {
         if (label == null)
@@ -372,7 +462,7 @@ public class EndScreenController : MonoBehaviour
         float target = btn.resolvedStyle.width * SwooshCoverage;
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             swoosh.style.width = target * t;
             yield return null;
@@ -388,7 +478,7 @@ public class EndScreenController : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float t = elapsed / duration;
             swoosh.style.width = Mathf.Lerp(start, 0f, t);
             yield return null;
@@ -422,26 +512,49 @@ public class EndScreenController : MonoBehaviour
 public struct RunScoreTuning
 {
     public float KInsects;
-    public float KTricks;
     public float KDistance;
     public float MinMultiplier;
     public float MaxMultiplier;
 }
 
+public struct RunScoreBreakdown
+{
+    public float ContribInsects;
+    public float ContribDistance;
+    public float RawMultiplier;
+    public float ClampedMultiplier;
+    public bool WasClamped;
+}
+
 public static class RunScoreCalculator
 {
-    public static float GetBonusMultiplier(int insects, int tricks, float distanceX, RunScoreTuning tuning)
+    public static RunScoreBreakdown GetBreakdown(int insects, float distanceX, RunScoreTuning tuning)
     {
-        float m = 1f + tuning.KInsects * insects + tuning.KTricks * tricks + tuning.KDistance * distanceX;
-        return Mathf.Clamp(m, tuning.MinMultiplier, tuning.MaxMultiplier);
+        float cI = tuning.KInsects * insects;
+        float cD = tuning.KDistance * distanceX;
+        float raw = 1f + cI + cD;
+        float clamped = Mathf.Clamp(raw, tuning.MinMultiplier, tuning.MaxMultiplier);
+        return new RunScoreBreakdown
+        {
+            ContribInsects = cI,
+            ContribDistance = cD,
+            RawMultiplier = raw,
+            ClampedMultiplier = clamped,
+            WasClamped = Mathf.Abs(raw - clamped) > 0.0001f,
+        };
     }
 
-    public static int ComputeFinalScore(int trickPoints, int insects, int tricks, float distanceX, RunScoreTuning tuning)
+    public static float GetBonusMultiplier(int insects, float distanceX, RunScoreTuning tuning)
+    {
+        return GetBreakdown(insects, distanceX, tuning).ClampedMultiplier;
+    }
+
+    public static int ComputeFinalScore(int trickPoints, int insects, float distanceX, RunScoreTuning tuning)
     {
         if (trickPoints <= 0)
             return 0;
 
-        float mult = GetBonusMultiplier(insects, tricks, distanceX, tuning);
+        float mult = GetBreakdown(insects, distanceX, tuning).ClampedMultiplier;
         return Mathf.Max(0, Mathf.RoundToInt(trickPoints * mult));
     }
 }

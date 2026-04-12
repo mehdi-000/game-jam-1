@@ -1,6 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/EndScreen.uss?fileID=7433441132597879392&amp;guid=f48ddd275746644b0b83793448404d83&amp;type=3#EndScreen"/>
     <ui:VisualElement name="Root" class="root">
+        <ui:VisualElement class="bg-stripe bg-stripe-1"/>
+        <ui:VisualElement class="bg-stripe bg-stripe-2"/>
+        <ui:VisualElement class="bg-stripe bg-stripe-3"/>
+        <ui:VisualElement class="dot dot-1"/>
+        <ui:VisualElement class="dot dot-2"/>
+        <ui:VisualElement class="dot dot-3"/>
+        <ui:VisualElement class="dot dot-4"/>
         <ui:VisualElement name="Content" class="content">
             <ui:VisualElement name="TitleBlock" class="title-block">
                 <ui:VisualElement class="title-row">
@@ -12,7 +19,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="BreakdownBlock" class="breakdown-block">
                 <ui:VisualElement class="breakdown-row">
-                    <ui:Label text="FLIP PTS" class="breakdown-caption"/>
+                    <ui:Label text="TRICK PTS" class="breakdown-caption"/>
                     <ui:Label name="BreakdownFlipPoints" text="0" class="breakdown-value"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="breakdown-row">
@@ -28,13 +35,30 @@
                     <ui:Label name="BreakdownDistance" text="0 m" class="breakdown-value"/>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="MultiplierRow" class="multiplier-row">
-                <ui:Label text="BONUS" class="band-caption multiplier-caption"/>
-                <ui:Label name="BonusMultiplierValue" text="×1.00" class="band-number multiplier-number"/>
+            <ui:VisualElement name="MultiplierDetailBlock" class="multiplier-detail-block">
+                <ui:Label text="RUN BONUS (adds on top of ×1)" class="multiplier-detail-header"/>
+                <ui:VisualElement class="mult-detail-row">
+                    <ui:Label text="Insects" class="mult-detail-caption"/>
+                    <ui:Label name="MultFromInsects" text="+0.00" class="mult-detail-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="mult-detail-row">
+                    <ui:Label text="Distance" class="mult-detail-caption"/>
+                    <ui:Label name="MultFromDistance" text="+0.00" class="mult-detail-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="MultClampRow" class="mult-clamp-row hide">
+                    <ui:Label name="MultUncappedValue" text="" class="mult-clamp-text"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="MultiplierRow" class="multiplier-row multiplier-row-boosted">
+                <ui:Label text="APPLIED BONUS" class="band-caption multiplier-caption-boosted"/>
+                <ui:Label name="BonusMultiplierValue" text="×1.00" class="band-number multiplier-number-boosted"/>
             </ui:VisualElement>
             <ui:VisualElement name="FinalBlock" class="score-block">
-                <ui:VisualElement class="score-band score-band-current">
-                    <ui:Label text="FINAL" class="band-caption"/>
+                <ui:VisualElement class="score-band score-band-current score-band-final">
+                    <ui:VisualElement class="final-score-col">
+                        <ui:Label text="FINAL" class="band-caption"/>
+                        <ui:Label name="FinalEquationLabel" text="" class="equation-line"/>
+                    </ui:VisualElement>
                     <ui:Label name="FinalRunValue" text="0" class="band-number number-current"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="score-band score-band-best">
@@ -43,7 +67,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="divider"/>
-            <ui:VisualElement name="Buttons" class="buttons">
+            <ui:VisualElement name="ActionButtons" class="buttons">
                 <ui:Button name="PlayAgainButton" text="PLAY AGAIN" class="btn btn-play">
                     <ui:VisualElement class="btn-swoosh"/>
                 </ui:Button>

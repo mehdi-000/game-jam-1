@@ -193,6 +193,7 @@
     background-color: rgba(255, 255, 255, 0.13);
     rotate: -14deg;
     border-radius: 8px;
+    -unity-picking-mode: Ignore;
 }
 
 .btn-play {

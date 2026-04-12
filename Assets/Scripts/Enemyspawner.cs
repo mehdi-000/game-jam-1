@@ -31,6 +31,7 @@ public class Enemyspanwner : MonoBehaviour
     public Camera spawnCamera;
 
     private float nextSpawnTriggerX;
+    private int lastSpawnIndex = -1;
 
     void Start()
     {
@@ -50,7 +51,22 @@ public class Enemyspanwner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        GameObject enemy = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+        int n = enemyPrefabs.Length;
+        int index;
+        if (n <= 1)
+        {
+            index = 0;
+        }
+        else
+        {
+            do
+            {
+                index = Random.Range(0, n);
+            } while (index == lastSpawnIndex);
+        }
+
+        lastSpawnIndex = index;
+        GameObject enemy = enemyPrefabs[index];
         float ahead = Random.Range(spawnAheadMin, spawnAheadMax);
         float spawnX = player.position.x + ahead;
         float spawnZ = 0f;

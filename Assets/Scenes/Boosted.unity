@@ -1108,7 +1108,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 784832633}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
@@ -1152,16 +1152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndScreenController
   scoreKInsects: 0.04
-  scoreKTricks: 0.03
   scoreKDistance: 0.015
   scoreMinMultiplier: 1
   scoreMaxMultiplier: 8
-  onPlayAgain:
-    m_PersistentCalls:
-      m_Calls: []
-  onQuit:
-    m_PersistentCalls:
-      m_Calls: []
   presentScoresOnStart: 0
 --- !u!1 &820676460
 GameObject:
