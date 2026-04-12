@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5963220917650869330}
   - component: {fileID: 8650100987773056466}
+  - component: {fileID: 6152889093795490705}
   m_Layer: 0
   m_Name: EnemyFly
   m_TagString: Target
@@ -54,6 +55,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6152889093795490705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666562745563987879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35736e79d90bc6f40b1c83eed760eb72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlyBehavior
+  moveSpeed: 2
+  directionChangeInterval: 0.4
 --- !u!1 &7099858998257782340
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,4 +196,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152b961d4a20b244b9d37f406355cd83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlyAnimDesynch
-  animationName: Fly
