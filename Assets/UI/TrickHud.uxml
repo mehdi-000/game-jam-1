@@ -1,28 +1,48 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/TrickHud.uss?fileID=7433441132597879392&amp;guid=a1b2c3d4e5f6789012345678abcdef04&amp;type=3#TrickHud"/>
     <ui:VisualElement name="HudRoot" class="hud-root">
+        <ui:VisualElement name="TutorialBlock" class="tutorial-block" picking-mode="Ignore">
+            <ui:VisualElement class="tutorial-row tutorial-row-mouse">
+                <ui:VisualElement name="TutorialMouse" class="tutorial-mouse">
+                    <ui:VisualElement class="tutorial-mouse-buttons">
+                        <ui:VisualElement name="TutorialMouseLeft" class="tutorial-mouse-btn tutorial-mouse-btn-left"/>
+                        <ui:VisualElement class="tutorial-mouse-btn tutorial-mouse-btn-right"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Click on Fly to catch" class="tutorial-hint"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="tutorial-row tutorial-row-keys">
+                <ui:VisualElement name="TutorialKeyQ" class="tutorial-key-cap">
+                    <ui:Label text="Q" class="tutorial-key-char"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="TutorialKeyE" class="tutorial-key-cap">
+                    <ui:Label text="E" class="tutorial-key-char"/>
+                </ui:VisualElement>
+                <ui:Label text="Q/E prime Legs - release to jump" class="tutorial-hint tutorial-hint-keys"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="HudPanel" class="hud-panel">
             <ui:VisualElement name="TrickRow" class="trick-row">
                 <ui:Label name="TrickShadow" text="" class="trick-shadow"/>
                 <ui:Label name="TrickName" text="" class="trick-name"/>
             </ui:VisualElement>
             <ui:VisualElement class="score-row">
-                <ui:Label text="SCORE" class="score-caption" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
+                <ui:Label text="SCORE" class="score-caption"/>
                 <ui:Label name="ScoreValue" text="0" class="score-value"/>
             </ui:VisualElement>
             <ui:VisualElement name="ComboBlock" class="combo-block combo-under-score">
                 <ui:VisualElement class="combo-fire"/>
                 <ui:VisualElement class="combo-line">
                     <ui:Label name="MultiplierValue" text="2x" class="combo-mult"/>
-                    <ui:Label text="COMBO" class="combo-tag" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
+                    <ui:Label text="COMBO" class="combo-tag"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="score-row">
-                <ui:Label text="INSECTS" class="score-caption" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
+                <ui:Label text="INSECTS" class="score-caption"/>
                 <ui:Label name="InsectEatenValue" text="0" class="score-value insect-count"/>
             </ui:VisualElement>
             <ui:VisualElement class="score-row">
-                <ui:Label text="DISTANCE" class="score-caption" style="-unity-font-definition: url(&quot;project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf?fileID=12800000&amp;guid=263da308c0291474cafd59ceb0f3d8e7&amp;type=3#SedgwickAveDisplay-Regular&quot;);"/>
+                <ui:Label text="DISTANCE" class="score-caption"/>
                 <ui:Label name="DistanceValue" text="0 m" class="score-value distance-value"/>
             </ui:VisualElement>
         </ui:VisualElement>

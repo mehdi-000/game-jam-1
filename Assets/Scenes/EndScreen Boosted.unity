@@ -408,8 +408,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EndScreenController
   scoreKInsects: 0.04
   scoreKDistance: 0.015
-  scoreMinMultiplier: 1
-  scoreMaxMultiplier: 8
   presentScoresOnStart: 1
   playAgainBoostedMode: 1
   mainMenuSceneName: Menu

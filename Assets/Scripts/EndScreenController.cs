@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -13,10 +12,9 @@ public class EndScreenController : MonoBehaviour
     const string BestFinalScoreKey = "FrogstylerBestFinalScore";
 
     [Header("Final score multiplier tuning")]
+    [Tooltip("Score multiplier = 1 + (this × insects) + (scoreKDistance × distance). No cap.")]
     [SerializeField] float scoreKInsects = 0.04f;
     [SerializeField] float scoreKDistance = 0.015f;
-    [SerializeField] float scoreMinMultiplier = 1f;
-    [SerializeField] float scoreMaxMultiplier = 8f;
 
     [Header("Scene")]
     [Tooltip("If true (dedicated EndScreen scene), runs score presentation on Start. Leave false when this object lives in the level and you call PresentRunEnd from code.")]
@@ -166,12 +164,10 @@ public class EndScreenController : MonoBehaviour
         {
             KInsects = scoreKInsects,
             KDistance = scoreKDistance,
-            MinMultiplier = scoreMinMultiplier,
-            MaxMultiplier = scoreMaxMultiplier,
         };
 
         RunScoreBreakdown breakdown = RunScoreCalculator.GetBreakdown(insects, dist, tuning);
-        float mult = breakdown.ClampedMultiplier;
+        float mult = breakdown.Multiplier;
         int finalScore = RunScoreCalculator.ComputeFinalScore(trickPts, insects, dist, tuning);
         int bestBefore = GetBestFinalScore();
 
@@ -181,11 +177,8 @@ public class EndScreenController : MonoBehaviour
         var lblDist = root.Q<Label>("BreakdownDistance");
         var lblMultFromIns = root.Q<Label>("MultFromInsects");
         var lblMultFromDist = root.Q<Label>("MultFromDistance");
-        var lblMultRaw = root.Q<Label>("MultUncappedValue");
-        var multClampRow = root.Q<VisualElement>("MultClampRow");
         var lblMult = root.Q<Label>("BonusMultiplierValue");
         var lblFinal = root.Q<Label>("FinalRunValue");
-        var lblEquation = root.Q<Label>("FinalEquationLabel");
         var lblBest = root.Q<Label>("FinalBestValue");
 
         if (lblFlip != null) lblFlip.text = "0";
@@ -194,8 +187,6 @@ public class EndScreenController : MonoBehaviour
         if (lblDist != null) lblDist.text = "0";
         if (lblMultFromIns != null) lblMultFromIns.text = "+0.00";
         if (lblMultFromDist != null) lblMultFromDist.text = "+0.00";
-        if (lblMultRaw != null) lblMultRaw.text = "";
-        if (multClampRow != null) multClampRow.AddToClassList("hide");
         if (lblMult != null) lblMult.text = "×1.00";
         if (lblFinal != null)
         {
@@ -206,7 +197,6 @@ public class EndScreenController : MonoBehaviour
         if (lblBest != null)
             lblBest.RemoveFromClassList("number-best--compact");
 
-        if (lblEquation != null) lblEquation.text = "";
         if (lblBest != null)
         {
             lblBest.text = bestBefore.ToString();
@@ -263,22 +253,10 @@ public class EndScreenController : MonoBehaviour
             yield return StartCoroutine(CountUpFloatContributionUnscaled(lblMultFromDist, 0f, breakdown.ContribDistance, 0.3f));
         }
 
-        if (breakdown.WasClamped && multClampRow != null && lblMultRaw != null)
-        {
-            multClampRow.RemoveFromClassList("hide");
-            if (breakdown.RawMultiplier < scoreMinMultiplier)
-                lblMultRaw.text = $"Raw ×{breakdown.RawMultiplier:F2} (raised to min ×{scoreMinMultiplier:F2})";
-            else
-                lblMultRaw.text = $"Raw ×{breakdown.RawMultiplier:F2} (capped at ×{scoreMaxMultiplier:F0})";
-        }
-
         if (multiplierRow != null)
             yield return StartCoroutine(ScalePopInUnscaled(multiplierRow, 0.2f));
 
         yield return StartCoroutine(CountUpMultiplierUnscaled(lblMult, 1f, mult, 0.55f));
-
-        if (lblEquation != null)
-            lblEquation.text = $"{FormatScore(trickPts)} × {mult:F2} =";
 
         if (finalBlock != null)
             yield return StartCoroutine(ScalePopInUnscaled(finalBlock, 0.26f));
@@ -398,13 +376,6 @@ public class EndScreenController : MonoBehaviour
         label.text = "+" + to.ToString("F2");
     }
 
-    static string FormatScore(int value)
-    {
-        if (value < 0)
-            return "0";
-        return value.ToString("N0", CultureInfo.InvariantCulture);
-    }
-
     static void ApplyScoreDigitCompactClass(Label label, int value, string compactClass)
     {
         if (label == null || string.IsNullOrEmpty(compactClass))
@@ -518,17 +489,14 @@ public struct RunScoreTuning
 {
     public float KInsects;
     public float KDistance;
-    public float MinMultiplier;
-    public float MaxMultiplier;
 }
 
 public struct RunScoreBreakdown
 {
     public float ContribInsects;
     public float ContribDistance;
-    public float RawMultiplier;
-    public float ClampedMultiplier;
-    public bool WasClamped;
+    /// <summary>1 + ContribInsects + ContribDistance — uncapped.</summary>
+    public float Multiplier;
 }
 
 public static class RunScoreCalculator
@@ -537,21 +505,18 @@ public static class RunScoreCalculator
     {
         float cI = tuning.KInsects * insects;
         float cD = tuning.KDistance * distanceX;
-        float raw = 1f + cI + cD;
-        float clamped = Mathf.Clamp(raw, tuning.MinMultiplier, tuning.MaxMultiplier);
+        float mult = 1f + cI + cD;
         return new RunScoreBreakdown
         {
             ContribInsects = cI,
             ContribDistance = cD,
-            RawMultiplier = raw,
-            ClampedMultiplier = clamped,
-            WasClamped = Mathf.Abs(raw - clamped) > 0.0001f,
+            Multiplier = mult,
         };
     }
 
     public static float GetBonusMultiplier(int insects, float distanceX, RunScoreTuning tuning)
     {
-        return GetBreakdown(insects, distanceX, tuning).ClampedMultiplier;
+        return GetBreakdown(insects, distanceX, tuning).Multiplier;
     }
 
     public static int ComputeFinalScore(int trickPoints, int insects, float distanceX, RunScoreTuning tuning)
@@ -559,7 +524,7 @@ public static class RunScoreCalculator
         if (trickPoints <= 0)
             return 0;
 
-        float mult = GetBreakdown(insects, distanceX, tuning).ClampedMultiplier;
+        float mult = GetBreakdown(insects, distanceX, tuning).Multiplier;
         return Mathf.Max(0, Mathf.RoundToInt(trickPoints * mult));
     }
 }

@@ -868,8 +868,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EndScreenController
   scoreKInsects: 0.04
   scoreKDistance: 0.015
-  scoreMinMultiplier: 1
-  scoreMaxMultiplier: 8
   presentScoresOnStart: 0
   playAgainBoostedMode: 0
   mainMenuSceneName: Menu
@@ -2399,6 +2397,7 @@ GameObject:
   - component: {fileID: 1900000002}
   - component: {fileID: 1900000003}
   - component: {fileID: 1900000004}
+  - component: {fileID: 1900000005}
   m_Layer: 5
   m_Name: TrickHud
   m_TagString: Untagged
@@ -2457,6 +2456,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrickHudController
   trickCombo: {fileID: 820676466}
+--- !u!114 &1900000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f4a5b6c7d8495061728394a5b6c7d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HudTutorialController
+  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &1907724460
 GameObject:
   m_ObjectHideFlags: 0

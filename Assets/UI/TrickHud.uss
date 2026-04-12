@@ -11,6 +11,7 @@
     padding-bottom: 28px;
     background-color: transparent;
     overflow: visible;
+    -unity-font-definition: url("project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf");
 }
 
 .hud-slash {
@@ -171,4 +172,114 @@
 
 .combo-dim .combo-fire {
     opacity: 0.2;
+}
+
+
+.tutorial-block {
+    position: absolute;
+    left: 28px;
+    bottom: 28px;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 460px;
+    padding: 16px 18px 14px 18px;
+    background-color: rgba(10, 10, 14, 0.72);
+    border-radius: 14px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-color: rgba(240, 239, 232, 0.18);
+}
+
+.tutorial-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.tutorial-row-keys {
+    margin-bottom: 0;
+}
+
+.tutorial-hint {
+    font-size: 18px;
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf");
+    color: #f7f6f2;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #0a0a0a;
+    margin-left: 14px;
+    white-space: normal;
+    flex-shrink: 1;
+    letter-spacing: 0.3px;
+}
+
+.tutorial-hint-keys {
+    margin-left: 12px;
+}
+
+.tutorial-mouse {
+    flex-shrink: 0;
+}
+
+.tutorial-mouse-buttons {
+    flex-direction: row;
+    align-items: center;
+}
+
+.tutorial-mouse-btn {
+    width: 40px;
+    height: 40px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-radius: 10px;
+    border-color: #ffffff;
+    background-color: rgba(0, 0, 0, 0);
+    margin-right: 6px;
+    transition-property: border-color;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.tutorial-mouse-btn-right {
+    margin-right: 0;
+    opacity: 0.85;
+}
+
+.tutorial-key-cap {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-radius: 12px;
+    border-color: #ffffff;
+    background-color: rgba(0, 0, 0, 0);
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    transition-property: border-color;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.tutorial-key-char {
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/fonts/SedgwickAveDisplay-Regular.ttf");
+    color: #ffffff;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #0a0a0a;
+    padding: 0;
+    margin: 0;
+}
+
+.tutorial-active {
+    border-color: #AC9EDB;
 }
