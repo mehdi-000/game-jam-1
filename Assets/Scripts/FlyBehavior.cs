@@ -8,9 +8,10 @@ public class FlyBehavior : MonoBehaviour
     private Vector2 currentDirection;
     private float directionChangeTimer;
 
-    private void Start()
+    private void OnEnable()
     {
         PickNewDirection();
+        if (transform.parent != null) transform.SetParent(null);
     }
 
     private void Update()

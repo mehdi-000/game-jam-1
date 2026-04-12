@@ -13,6 +13,7 @@ public class DragOnFlyBehavior : MonoBehaviour
     {
         targetPosition = transform.position;
         moveTimer = moveInterval;
+        if (transform.parent != null) transform.SetParent(null);
     }
 
     private void Update()
