@@ -93,6 +93,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-top: 22px;
 }
 
 .title-block {
@@ -249,7 +250,7 @@
     padding-top: 10px;
     padding-bottom: 10px;
     margin-bottom: 10px;
-    rotate: 0.9deg;
+    rotate: 0deg;
 }
 
 .multiplier-row-boosted {
@@ -264,7 +265,7 @@
 }
 
 .multiplier-number-boosted {
-    font-size: 40px;
+    font-size: 34px;
     color: #f0efe8;
     -unity-text-outline-width: 2px;
     -unity-text-outline-color: #0a0a0a;
@@ -274,6 +275,7 @@
     flex-direction: column;
     align-items: center;
     margin-top: 4px;
+    margin-bottom: 26px;
 }
 
 .score-band {
@@ -308,13 +310,14 @@
 
 .score-band-current {
     background-color: #FFE040;
-    rotate: -1.4deg;
+    rotate: 0deg;
     margin-bottom: 8px;
 }
 
 .score-band-best {
     background-color: #0a0a0a;
-    rotate: 0.6deg;
+    rotate: 0deg;
+    margin-bottom: 10px;
 }
 
 .band-caption {
@@ -331,10 +334,13 @@
 .band-number {
     -unity-font-style: bold;
     flex-shrink: 0;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .number-current {
-    font-size: 68px;
+    font-size: 56px;
     color: #0a0a0a;
     -unity-text-outline-color: rgba(255, 255, 255, 0.25);
     -unity-text-outline-width: 2px;
@@ -344,12 +350,17 @@
 }
 
 .number-current--compact {
-    font-size: 44px;
+    font-size: 40px;
+    -unity-text-outline-width: 1px;
+}
+
+.number-current--tiny {
+    font-size: 32px;
     -unity-text-outline-width: 1px;
 }
 
 .number-best {
-    font-size: 52px;
+    font-size: 44px;
     color: #5ED142;
     -unity-text-outline-color: #0a0a0a;
     -unity-text-outline-width: 2px;
@@ -359,24 +370,22 @@
 }
 
 .number-best--compact {
-    font-size: 36px;
+    font-size: 34px;
 }
 
+.number-best--tiny {
+    font-size: 26px;
+}
 
 .divider {
-    width: 200px;
-    height: 3px;
-    background-color: rgba(94, 209, 66, 0.22);
-    border-radius: 2px;
-    margin-top: 18px;
-    margin-bottom: 24px;
-    rotate: -1deg;
+    display: none;
 }
 
 
 .buttons {
     flex-direction: column;
     align-items: center;
+    margin-top: 6px;
 }
 
 .btn {
@@ -432,7 +441,8 @@
     background-color: rgba(244, 240, 255, 0.92);
     color: #1a1428;
     border-color: #1a1428;
-    rotate: 0.4deg;
+    rotate: -1deg;
+    margin-bottom: 34px;
 }
 
 .btn-menu:hover {

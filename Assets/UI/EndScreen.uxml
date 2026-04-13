@@ -53,7 +53,7 @@
             <ui:VisualElement name="FinalBlock" class="score-block">
                 <ui:VisualElement class="score-band score-band-current score-band-final">
                     <ui:VisualElement class="final-score-col">
-                        <ui:Label text="FINAL SCORE" class="band-caption"/>
+                        <ui:Label text="FINAL" class="band-caption"/>
                     </ui:VisualElement>
                     <ui:Label name="FinalRunValue" text="0" class="band-number number-current"/>
                 </ui:VisualElement>
